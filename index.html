@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Develey Meme Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Der Moment des Unerwarteten</h1>
+        
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas" style="display:none;"></canvas>
+        
+        <div class="controls">
+            <input type="text" id="headline" placeholder="Deine Headline hier...">
+            <button id="snap">Foto machen & Meme erstellen</button>
+        </div>
+
+        <div id="result-container" style="display:none;">
+            <h2>Dein Meme:</h2>
+            <img id="photo" alt="Dein Meme">
+            <p>Lade das Bild herunter oder sende es dir zu!</p>
+            <button onclick="location.reload()">Neues Foto</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

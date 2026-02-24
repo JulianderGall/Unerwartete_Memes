@@ -93,14 +93,25 @@ h1 {
     margin-bottom: 15px;
 }
 
-/* "Dein Meme" Überschrift: Formatiert nach Marken-Vorgaben */
+/* style.css - Korrektur für Dein Meme Branding */
+
 h2 {
     font-family: "Open Sans", sans-serif !important;
     font-weight: 700 !important;
-    font-size: clamp(1.8rem, 5vw, 2.8rem) !important;
+    font-size: 1.8rem !important; /* Passend zur h2-Vorgabe aus develeyBrand.css */
     color: white !important;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 30px !important;
+    margin-bottom: 10px !important;
+    text-align: center;
+    /* Entfernen von Schattierungen, falls vorhanden */
+    -webkit-text-stroke: 0px !important;
+}
+
+/* Sicherstellen, dass die Photo-Preview keinen Rahmen-Innenabstand hat */
+#photo {
+    padding: 0 !important;
+    display: block;
+    margin: 0 auto;
 }
 
 /* ==========================================

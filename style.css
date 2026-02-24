@@ -5,76 +5,111 @@
     --develey-yellow: rgb(255, 200, 46);
 }
 
-/* Reset für lückenloses Grün bis ganz nach oben */
+/* Reset für lückenloses Grün */
 html, body {
     margin: 0;
     padding: 0;
     background-color: var(--develey-green);
+    overflow-x: hidden;
 }
 
-/* Das Logo: Schwebt fixiert oben links */
+/* 1. SCHWEBENDES LOGO (Bündig & Mobiloptimiert) */
 .develey-logo-fixed {
-    position: fixed; /* Schwebt über allem */
+    position: absolute; /* Fixiert oben links im Container */
     top: 0;
     left: 0;
-    width: 25vw; /* 25% der Breite */
-    max-width: 280px; /* Begrenzung für große Screens */
-    z-index: 9999; /* Immer ganz oben */
-    transform: none !important; /* Absolut gerade, nicht schräg! */
-    display: block;
+    width: 25vw;
+    max-width: 280px; 
+    min-width: 120px;
+    z-index: 1000;
+    padding: 0;
+    margin: 0;
 }
 
-/* Die grüne Hauptsektion */
+/* 2. HAUPT-CONTAINER (Anlehnung an develeyBrand.css) */
 .skew-section {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    background-color: var(--develey-green);
-    /* Die Schräge beginnt erst unterhalb des Logos */
+    padding: 80px 0;
     transform: skewY(-2deg);
     transform-origin: top left;
-    padding-top: 120px; /* Platz schaffen, damit Logo nichts verdeckt */
+    background-color: var(--develey-green);
 }
 
 .content-inner {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
-    transform: skewY(2deg); /* Inhalt gerade rücken */
+    transform: skewY(2deg); /* Gerade rücken des Inhalts */
     text-align: center;
     color: white;
 }
 
-/* Typografie Updates */
+/* 3. TYPOGRAFIE (Groß, gemischte Schreibweise, kein nur Großbuchstaben) */
 h1 {
     font-family: "Open Sans", sans-serif;
-    font-size: clamp(2.5rem, 10vw, 4.2rem); /* 20% größer als vorher */
+    font-size: clamp(2.2rem, 9vw, 4.2rem); 
     font-weight: 800;
     line-height: 1.1;
-    margin-bottom: 30px;
+    margin-top: 40px;
+    margin-bottom: 20px;
 }
 
-/* Button Styling (Keine Großbuchstaben, größerer Text) */
+/* 4. KAMERA-FRAME (Responsiv & Formatanpassung) */
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+video, #photo {
+    width: 100%;
+    border-radius: 15px;
+    border: 5px solid var(--develey-yellow);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+/* Hochformat-Zwang für Mobile */
+@media screen and (max-width: 800px) {
+    .video-wrapper {
+        max-width: 90%;
+        aspect-ratio: 3 / 4; /* Erzeugt Hochformat-Feeling */
+    }
+    video {
+        object-fit: cover;
+        height: 100%;
+    }
+    h1 { font-size: 2rem; }
+}
+
+/* 5. INTERFACE ELEMENTE */
+input#headline {
+    width: 90%;
+    max-width: 500px;
+    padding: 18px;
+    margin: 20px 0;
+    border-radius: 50px;
+    border: none;
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+}
+
 button {
     background-color: var(--develey-yellow);
-    color: #000;
-    border: none;
-    padding: 20px 40px;
+    color: black;
+    padding: 18px 45px;
     font-family: "Open Sans", sans-serif;
     font-weight: 800;
-    font-size: 1.8rem;
-    border-radius: 60px;
+    font-size: 1.4rem;
+    border-radius: 50px;
+    border: none;
     cursor: pointer;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Weichgezeichneter Schatten */
-    transition: transform 0.2s;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Weicher Schatten */
+    transition: transform 0.1s;
 }
 
 button:active { transform: scale(0.96); }
-
-/* Kamera & Ergebnis */
-video, #photo {
-    width: 100%;
-    max-width: 650px;
-    border-radius: 15px;
-    border: 5px solid var(--develey-yellow);
-}

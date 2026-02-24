@@ -1,6 +1,6 @@
 /**
  * Develey Meme Generator - Script
- * Fokus: Mobiloptimierung, Hochformat & Branding-Integration
+ * Fokus: Fehlerresistenz, Branding & weichgezeichnete Effekte
  */
 
 const video = document.getElementById('video');
@@ -16,13 +16,12 @@ const generatorBox = document.querySelector('.generator-box');
 const LOGO_SRC = 'Develey_Logo_Ecke.png'; 
 const STOERER_SRC = 'Bereit für das #unerwartete_Störer.png'; 
 
-// 1. Kamera-Zugriff mit Fokus auf Hochformat bei Mobilgeräten
-const isMobile = window.innerWidth < 800;
+// 1. Kamera-Zugriff starten (Mobil-Optimiert)
 const constraints = {
-    video: {
+    video: { 
         facingMode: "user",
-        // Auf dem Handy erzwingen wir ein Hochformat (z.B. 3:4)
-        aspectRatio: isMobile ? 0.75 : 1.77 
+        // Hochformat-Anpassung für mobile Geräte
+        aspectRatio: window.innerWidth < 800 ? 0.75 : 1.77 
     },
     audio: false
 };
@@ -35,11 +34,11 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     })
     .catch(err => {
         console.error("Kamera-Fehler: ", err);
-        alert("Kamera konnte nicht geladen werden. Bitte stelle sicher, dass du HTTPS nutzt.");
+        alert("Kamera konnte nicht geladen werden. Bitte verwende HTTPS.");
     });
 }
 
-// 2. Meme generieren beim Klick auf den Button
+// 2. Meme generieren (Button: "Say Develey")
 snap.addEventListener('click', () => {
     const context = canvas.getContext('2d');
     
@@ -47,32 +46,28 @@ snap.addEventListener('click', () => {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    // A) Das Live-Bild vom Video auf den Canvas zeichnen
+    // A) Das Live-Bild auf den Canvas zeichnen
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // B) Headline-Text zeichnen
-    // Text aus dem Input holen oder Standard-Text setzen
-    const text = headlineInput.value || "Moment des Unerwarteten";
-    
-    // Styling: Extra Fett (900) & groß
-    context.font = "900 65px 'Montserrat', sans-serif";
+    // B) Headline-Text zeichnen (Extra Fett & Weicher Schatten)
+    const text = headlineInput.value || "Wie reagierst du?";
+    context.font = "900 65px 'Montserrat', sans-serif"; // Extra Fett
     context.fillStyle = "white";
     context.textAlign = "center";
     
-    // Weichgezeichneter, tiefer Schatten für bessere Lesbarkeit
+    // Weichgezeichneter Schatten für den Text
     context.shadowColor = "rgba(0, 0, 0, 0.6)";
     context.shadowBlur = 20; 
     context.shadowOffsetX = 4;
     context.shadowOffsetY = 4;
     
-    // Text oben zentriert positionieren
     context.fillText(text, canvas.width / 2, 100);
 
-    // C) Branding (Logo & Störer) hinzufügen
+    // C) Branding (Logo & Störer) laden und einfügen
     const logoImg = new Image();
     const stoererImg = new Image();
     
-    // Wichtig für lokale Tests und GitHub Pages
+    // CrossOrigin-Einstellung für GitHub Pages
     logoImg.crossOrigin = "anonymous";
     stoererImg.crossOrigin = "anonymous";
     
@@ -82,24 +77,28 @@ snap.addEventListener('click', () => {
     let loadedCount = 0;
     const finalizeImage = () => {
         loadedCount++;
-        // Erst wenn beide Bilder geladen sind, wird das Meme fertiggestellt
+        // Erst wenn beide Bilder verarbeitet wurden (geladen oder Fehler)
         if (loadedCount === 2) {
-            // Schatten für die Logos deaktivieren
+            // Schatten für Branding-Elemente deaktivieren
             context.shadowBlur = 0;
             context.shadowOffsetX = 0;
             context.shadowOffsetY = 0;
             
-            // Logo unten links platzieren (ca. 160px breit)
+            // Logo unten links platzieren (Breite ca. 160px)
             const lWidth = 160;
             const lHeight = (logoImg.height / logoImg.width) * lWidth;
-            context.drawImage(logoImg, 30, canvas.height - lHeight - 30, lWidth, lHeight);
+            if (logoImg.complete && logoImg.naturalWidth !== 0) {
+                context.drawImage(logoImg, 30, canvas.height - lHeight - 30, lWidth, lHeight);
+            }
 
-            // Störer unten rechts platzieren (ca. 280px breit)
+            // Störer unten rechts platzieren (Breite ca. 280px)
             const sWidth = 280;
             const sHeight = (stoererImg.height / stoererImg.width) * sWidth;
-            context.drawImage(stoererImg, canvas.width - sWidth - 20, canvas.height - sHeight - 20, sWidth, sHeight);
+            if (stoererImg.complete && stoererImg.naturalWidth !== 0) {
+                context.drawImage(stoererImg, canvas.width - sWidth - 20, canvas.height - sHeight - 20, sWidth, sHeight);
+            }
 
-            // Canvas in Bild umwandeln und anzeigen
+            // Canvas in JPEG umwandeln
             photo.src = canvas.toDataURL('image/jpeg', 0.9);
             
             // Interface umschalten
@@ -108,16 +107,22 @@ snap.addEventListener('click', () => {
         }
     };
 
+    // Event-Listener für das Laden der Bilder
     logoImg.onload = finalizeImage;
     stoererImg.onload = finalizeImage;
     
-    // Fallback: Falls ein Bild nicht geladen werden kann, trotzdem das Foto zeigen
-    logoImg.onerror = finalizeImage;
-    stoererImg.onerror = finalizeImage;
+    // Fallback: Falls ein Bildpfad falsch ist, wird das Meme trotzdem erstellt
+    logoImg.onerror = () => {
+        console.warn("Logo konnte nicht geladen werden.");
+        finalizeImage();
+    };
+    stoererImg.onerror = () => {
+        console.warn("Störer konnte nicht geladen werden.");
+        finalizeImage();
+    };
 });
 
 // 3. Reset-Funktion: Alles zurück auf Anfang
 resetBtn.addEventListener('click', () => {
-    // Einfachster Weg für einen sauberen Neustart der Kamera und Felder
     location.reload(); 
 });

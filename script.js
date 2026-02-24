@@ -68,3 +68,52 @@ snap.addEventListener('click', () => {
 resetBtn.addEventListener('click', () => {
     location.reload(); // Einfachste Methode für sauberen Reset am Kiosk
 });
+// ... (Kamera-Setup bleibt gleich)
+
+snap.addEventListener('click', () => {
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // 1. Das Foto zeichnen
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // 2. Headline (Extra Fett, gemischte Schreibweise)
+    const text = headlineInput.value || "Moment des Unerwarteten";
+    context.font = "900 70px Montserrat"; // Extra Fett
+    context.fillStyle = "white";
+    context.textAlign = "center";
+    context.shadowColor = "rgba(0, 0, 0, 0.6)";
+    context.shadowBlur = 20; // Weicher Schatten
+    context.fillText(text, canvas.width / 2, 100);
+
+    // 3. Branding-Elemente laden
+    const logoImg = new Image();
+    const stoererImg = new Image();
+    logoImg.src = 'Develey_Logo_Ecke.png';
+    stoererImg.src = 'Bereit für das #unerwartete_Störer.png';
+
+    let loaded = 0;
+    const drawBranding = () => {
+        loaded++;
+        if (loaded === 2) {
+            context.shadowBlur = 0; // Schatten für Logos aus
+            
+            // Kleines Logo unten links ins Foto
+            context.drawImage(logoImg, 20, canvas.height - 90, 150, 60);
+
+            // Störer unten rechts ins Foto
+            const sWidth = 300;
+            const sHeight = (stoererImg.height / stoererImg.width) * sWidth;
+            context.drawImage(stoererImg, canvas.width - sWidth - 20, canvas.height - sHeight - 20, sWidth, sHeight);
+
+            // Ergebnis anzeigen
+            photo.src = canvas.toDataURL('image/jpeg', 0.9);
+            document.querySelector('.generator-box').style.display = 'none';
+            document.getElementById('result-container').style.display = 'block';
+        }
+    };
+
+    logoImg.onload = drawBranding;
+    stoererImg.onload = drawBranding;
+});

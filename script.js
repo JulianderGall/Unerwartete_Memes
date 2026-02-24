@@ -1,20 +1,27 @@
+/**
+ * script.js - Develey Meme Generator
+ * Anpassungen: Logo-Größe, Text-Shadow, Headline-Position & Störer-Fix
+ */
+
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const snap = document.getElementById('snap');
 const resetBtn = document.getElementById('reset');
 const headlineInput = document.getElementById('headline');
 const photo = document.getElementById('photo');
+const resultContainer = document.getElementById('result-container');
+const generatorBox = document.querySelector('.generator-box');
 
-// Bildquellen aus deinem Repository
+// Bildpfade
 const LOGO_SRC = 'Develey_Logo_Ecke.png';
-const STOERER_SRC = 'Bereit für das #unerwartete_Störer.png';
+// Fix für Sonderzeichen: Das '#' muss für URLs mit %23 maskiert werden
+const STOERER_SRC = 'Bereit für das %23unerwartete_Störer.png';
 
-// 1. Kamera-Zugriff starten
+// Kamera-Zugriff
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ 
         video: { 
             facingMode: "user",
-            // Optimierung für Mobile/iPad
             aspectRatio: window.innerWidth < 800 ? 0.75 : 1.77 
         } 
     })
@@ -25,7 +32,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     .catch(err => console.error("Kamera Fehler:", err));
 }
 
-// Hilfsfunktion für den automatischen Textumbruch (Zweizeilig)
+// Hilfsfunktion für den automatischen Textumbruch
 function wrapText(context, text, x, y, maxWidth, lineHeight) {
     const words = text.split(' ');
     let line = '';
@@ -43,32 +50,35 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
     context.fillText(line, x, y);
 }
 
-// 2. Foto aufnehmen & Meme generieren
+// Meme generieren
 snap.addEventListener('click', () => {
     const context = canvas.getContext('2d');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    // Foto vom Stream auf Canvas zeichnen
+    // 1. Das Foto zeichnen
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Konfiguration für Headline: Extra Fett (900) & Weicher Schatten
+    // 2. Headline-Konfiguration
     const text = headlineInput.value || "Wie reagierst du?";
-    context.font = "900 55px 'Montserrat', sans-serif";
+    context.font = "900 60px 'Montserrat', sans-serif";
     context.fillStyle = "white";
     context.textAlign = "left"; 
-    context.shadowColor = "rgba(0, 0, 0, 0.6)";
+    
+    // Weichgezeichneter Schlagschatten für den Text
+    context.shadowColor = "rgba(0, 0, 0, 0.7)";
     context.shadowBlur = 15;
+    context.shadowOffsetX = 4;
+    context.shadowOffsetY = 4;
 
-    // Headline-Positionierung: Rechts neben dem Logo (Platz lassen für Logo links)
-    // Wir starten bei x=280, um dem Logo (25% Breite) Platz zu machen.
-    wrapText(context, text, 280, 85, canvas.width - 320, 60);
+    // Positionierung der Headline: 
+    // Wir rücken den Text weiter nach rechts (x=320), damit das vergrößerte Logo links Platz hat
+    wrapText(context, text, 320, 90, canvas.width - 350, 65);
 
-    // Branding-Elemente laden
+    // 3. Branding-Bilder laden
     const logo = new Image();
     const stoerer = new Image();
     
-    // CrossOrigin für GitHub Pages
     logo.crossOrigin = "anonymous";
     stoerer.crossOrigin = "anonymous";
     
@@ -79,34 +89,37 @@ snap.addEventListener('click', () => {
     const drawBranding = () => {
         loaded++;
         if (loaded === 2) {
-            context.shadowBlur = 0; // Schatten für Logos deaktivieren
+            // Schatten-Konfiguration für das Logo
+            context.shadowColor = "rgba(0, 0, 0, 0.4)";
+            context.shadowBlur = 12;
+            context.shadowOffsetX = 5;
+            context.shadowOffsetY = 5;
             
-            // LOGO OBEN LINKS (ca. 25% der Foto-Breite)
-            const lWidth = canvas.width * 0.25;
+            // LOGO OBEN LINKS (ca. 28% der Breite)
+            const lWidth = canvas.width * 0.28;
             const lHeight = (logo.height / logo.width) * lWidth;
-            context.drawImage(logo, 10, 10, lWidth, lHeight);
+            context.drawImage(logo, 20, 20, lWidth, lHeight);
 
             // STÖRER UNTEN RECHTS
-            const sWidth = 300;
+            // Schatten für Störer (etwas dezenter)
+            context.shadowBlur = 8;
+            const sWidth = 320;
             const sHeight = (stoerer.height / stoerer.width) * sWidth;
-            context.drawImage(stoerer, canvas.width - sWidth - 20, canvas.height - sHeight - 20, sWidth, sHeight);
+            context.drawImage(stoerer, canvas.width - sWidth - 25, canvas.height - sHeight - 25, sWidth, sHeight);
 
-            // Ergebnis im Interface anzeigen
+            // UI umschalten
             photo.src = canvas.toDataURL('image/jpeg', 0.9);
-            document.querySelector('.generator-box').style.display = 'none';
-            document.getElementById('result-container').style.display = 'block';
+            generatorBox.style.display = 'none';
+            resultContainer.style.display = 'block';
         }
     };
 
     logo.onload = drawBranding;
     stoerer.onload = drawBranding;
     
-    // Fallback: Falls ein Bildpfad falsch ist (z.B. wegen #), trotzdem Meme zeigen
+    // Fallback, falls der Störer-Dateiname trotzdem hakt
     logo.onerror = drawBranding;
     stoerer.onerror = drawBranding;
 });
 
-// 3. Reset-Logik für "Neuer Versuch"
-resetBtn.addEventListener('click', () => { 
-    location.reload(); 
-});
+resetBtn.addEventListener('click', () => { location.reload(); });

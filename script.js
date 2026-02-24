@@ -1,6 +1,6 @@
 /**
- * script.js - Develey Meme Generator
- * Anpassungen: Logo-Größe, Text-Shadow, Headline-Position & Störer-Fix
+ * script.js - Finale Version
+ * Fokus: Bündiges Logo (0,0), bündiger Störer & zweizeilige Headline
  */
 
 const video = document.getElementById('video');
@@ -12,27 +12,32 @@ const photo = document.getElementById('photo');
 const resultContainer = document.getElementById('result-container');
 const generatorBox = document.querySelector('.generator-box');
 
-// Bildpfade
+// Bildquellen (Pfade aus deinem Repository)
 const LOGO_SRC = 'Develey_Logo_Ecke.png';
-// Fix für Sonderzeichen: Das '#' muss für URLs mit %23 maskiert werden
+// Fix: Das '#' im Dateinamen muss als '%23' maskiert werden
 const STOERER_SRC = 'Bereit für das %23unerwartete_Störer.png';
 
-// Kamera-Zugriff
+// 1. Kamera-Zugriff starten (Mobil-Optimiert)
+const constraints = {
+    video: { 
+        facingMode: "user",
+        aspectRatio: window.innerWidth < 800 ? 0.75 : 1.77 
+    },
+    audio: false
+};
+
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ 
-        video: { 
-            facingMode: "user",
-            aspectRatio: window.innerWidth < 800 ? 0.75 : 1.77 
-        } 
-    })
-    .then(stream => { 
-        video.srcObject = stream; 
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then(stream => {
+        video.srcObject = stream;
         video.play();
     })
-    .catch(err => console.error("Kamera Fehler:", err));
+    .catch(err => {
+        console.error("Kamera-Fehler: ", err);
+    });
 }
 
-// Hilfsfunktion für den automatischen Textumbruch
+// Hilfsfunktion für den automatischen Textumbruch (Zweizeilig)
 function wrapText(context, text, x, y, maxWidth, lineHeight) {
     const words = text.split(' ');
     let line = '';
@@ -50,76 +55,78 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
     context.fillText(line, x, y);
 }
 
-// Meme generieren
+// 2. Meme generieren (Button: "Say Develey")
 snap.addEventListener('click', () => {
     const context = canvas.getContext('2d');
+    
+    // Canvas-Größe an den Video-Stream anpassen
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    // 1. Das Foto zeichnen
+    // A) Das Live-Bild auf den Canvas zeichnen
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // 2. Headline-Konfiguration
+    // B) Headline-Text zeichnen (Extra Fett & Weicher Schatten)
     const text = headlineInput.value || "Wie reagierst du?";
     context.font = "900 60px 'Montserrat', sans-serif";
     context.fillStyle = "white";
     context.textAlign = "left"; 
     
-    // Weichgezeichneter Schlagschatten für den Text
+    // Weichgezeichneter Schatten für den Text
     context.shadowColor = "rgba(0, 0, 0, 0.7)";
-    context.shadowBlur = 15;
+    context.shadowBlur = 20; 
     context.shadowOffsetX = 4;
     context.shadowOffsetY = 4;
-
-    // Positionierung der Headline: 
-    // Wir rücken den Text weiter nach rechts (x=320), damit das vergrößerte Logo links Platz hat
-    wrapText(context, text, 320, 90, canvas.width - 350, 65);
-
-    // 3. Branding-Bilder laden
-    const logo = new Image();
-    const stoerer = new Image();
     
-    logo.crossOrigin = "anonymous";
-    stoerer.crossOrigin = "anonymous";
-    
-    logo.src = LOGO_SRC;
-    stoerer.src = STOERER_SRC;
+    // Headline rückt nach rechts (x=350), um dem bündigen Logo Platz zu machen
+    wrapText(context, text, 350, 95, canvas.width - 380, 65);
 
-    let loaded = 0;
-    const drawBranding = () => {
-        loaded++;
-        if (loaded === 2) {
-            // Schatten-Konfiguration für das Logo
+    // C) Branding (Logo & Störer) laden
+    const logoImg = new Image();
+    const stoererImg = new Image();
+    
+    logoImg.crossOrigin = "anonymous";
+    stoererImg.crossOrigin = "anonymous";
+    
+    logoImg.src = LOGO_SRC;
+    stoererImg.src = STOERER_SRC;
+
+    let loadedCount = 0;
+    const finalizeImage = () => {
+        loadedCount++;
+        if (loadedCount === 2) {
+            // Schatten für Branding-Elemente (weichgezeichnet)
             context.shadowColor = "rgba(0, 0, 0, 0.4)";
             context.shadowBlur = 12;
             context.shadowOffsetX = 5;
             context.shadowOffsetY = 5;
             
-            // LOGO OBEN LINKS (ca. 28% der Breite)
-            const lWidth = canvas.width * 0.28;
-            const lHeight = (logo.height / logo.width) * lWidth;
-            context.drawImage(logo, 20, 20, lWidth, lHeight);
+            // LOGO OBEN LINKS - Absolut bündig (0, 0) und vergrößert
+            const lWidth = canvas.width * 0.30; 
+            const lHeight = (logoImg.height / logoImg.width) * lWidth;
+            context.drawImage(logoImg, 0, 0, lWidth, lHeight);
 
-            // STÖRER UNTEN RECHTS
-            // Schatten für Störer (etwas dezenter)
-            context.shadowBlur = 8;
-            const sWidth = 320;
-            const sHeight = (stoerer.height / stoerer.width) * sWidth;
-            context.drawImage(stoerer, canvas.width - sWidth - 25, canvas.height - sHeight - 25, sWidth, sHeight);
+            // STÖRER UNTEN RECHTS - Absolut bündig zum Rand
+            const sWidth = 340;
+            const sHeight = (stoererImg.height / stoererImg.width) * sWidth;
+            context.drawImage(stoererImg, canvas.width - sWidth, canvas.height - sHeight, sWidth, sHeight);
 
-            // UI umschalten
+            // Ergebnis anzeigen
             photo.src = canvas.toDataURL('image/jpeg', 0.9);
             generatorBox.style.display = 'none';
             resultContainer.style.display = 'block';
         }
     };
 
-    logo.onload = drawBranding;
-    stoerer.onload = drawBranding;
+    logoImg.onload = finalizeImage;
+    stoererImg.onload = finalizeImage;
     
-    // Fallback, falls der Störer-Dateiname trotzdem hakt
-    logo.onerror = drawBranding;
-    stoerer.onerror = drawBranding;
+    // Fallback bei Ladefehlern
+    logoImg.onerror = finalizeImage;
+    stoererImg.onerror = finalizeImage;
 });
 
-resetBtn.addEventListener('click', () => { location.reload(); });
+// 3. Reset-Funktion
+resetBtn.addEventListener('click', () => {
+    location.reload(); 
+});

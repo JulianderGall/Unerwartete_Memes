@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Develey Meme Generator | Moment des Unerwarteten</title>
+    <title>Develey Meme Generator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header class="header-wrapper">
-        <img src="Develey_Logo_Ecke.png" class="develey-floating-logo" alt="Develey Logo">
-    </header>
-
     <section class="skew-section bg-green">
+        <img src="Develey_Logo_Ecke.png" class="develey-logo-fixed" alt="Develey Logo">
+        
         <div class="content-inner">
             <span class="intro-text">Messe-Special</span>
             <h1>Moment des Unerwarteten</h1>
@@ -24,7 +22,7 @@
                 </div>
                 
                 <div class="controls">
-                    <input type="text" id="headline" placeholder="Deine Headline (z.B. Der Senf-Schock...)">
+                    <input type="text" id="headline" placeholder="Deine Headline...">
                     <button id="snap" class="btn-main">Foto machen & erstellen</button>
                 </div>
             </div>
@@ -32,11 +30,9 @@
             <div id="result-container" style="display:none;">
                 <div class="result-card">
                     <h2>Dein Meme:</h2>
-                    <img id="photo" alt="Dein generiertes Meme">
-                    
+                    <img id="photo" alt="Meme">
                     <div class="action-buttons">
                         <button id="reset" class="btn-secondary">Neuer Versuch</button>
-                        <p class="hint-text">Tippe lange auf das Bild zum Speichern</p>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 /* ==========================================
    1. FONTS & GRUNDEINSTELLUNGEN
+   Basierend auf der Develey Brand Identity
 ========================================== */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=Open+Sans:wdth,wght@75,800&display=swap');
 
@@ -9,7 +10,7 @@
     --skew-angle: -2deg;
 }
 
-/* Reset für lückenloses Design bis zum oberen Rand */
+/* Lückenloses Design: Grün bis ganz nach oben */
 html, body {
     margin: 0;
     padding: 0;
@@ -20,22 +21,25 @@ html, body {
 
 /* ==========================================
    2. SCHWEBENDES LOGO (INTERFACE)
-   Positioniert bündig oben links, nicht schräg
+   Bündig oben links, schwebt über dem Inhalt
 ========================================== */
 .develey-logo-fixed {
     position: fixed;
     top: 0;
     left: 0;
-    width: 25vw; /* 25% der Bildschirmbreite */
-    max-width: 250px; /* Begrenzung, damit es nicht zu groß wird */
-    min-width: 120px;
+    /* Größe: 25% der Bildschirmbreite, wie gewünscht */
+    width: 25vw; 
+    max-width: 280px; 
+    min-width: 140px;
     z-index: 9999;
-    transform: none !important; /* Absolut gerade */
+    /* Keine Schräge für das Logo-Branding */
+    transform: none !important; 
     display: block;
 }
 
 /* ==========================================
    3. HAUPT-SEKTION (SKEW DESIGN)
+   Anpassung an develeyBrand.css
 ========================================== */
 .skew-section {
     position: relative;
@@ -43,52 +47,64 @@ html, body {
     min-height: 100vh;
     background-color: var(--develey-green);
     
-    /* Die Neigung wie in der develeyBrand.css */
+    /* Typische Schräge der Develey-Kampagne */
     transform: skewY(var(--skew-angle));
     transform-origin: top left;
     
-    /* Platz nach oben für das schwebende Logo */
-    padding-top: 100px;
+    /* Genügend Platz oben, damit das Logo nichts verdeckt */
+    padding-top: 120px; 
     margin-top: 0;
 }
 
 .content-inner {
     max-width: 1000px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 20px;
     
-    /* Inhalt wieder gerade rücken */
+    /* Inhalt wieder gerade rücken (Gegendrehung) */
     transform: skewY(calc(var(--skew-angle) * -1));
     text-align: center;
     color: white;
 }
 
 /* ==========================================
-   4. TYPOGRAFIE (20% GRÖSSER)
+   4. TYPOGRAFIE (BRAND-KONFORM)
 ========================================== */
+
+/* Hauptüberschrift: 20% größer, Open Sans Extra Bold */
 h1 {
     font-family: "Open Sans", sans-serif;
-    /* Dynamische Größe: ca. 20% größer als Standard */
-    font-size: clamp(2.5rem, 9vw, 4.5rem); 
+    font-size: clamp(2.5rem, 10vw, 4.5rem); 
     font-weight: 800;
     line-height: 1.1;
     margin-bottom: 25px;
     color: white !important;
 }
 
+/* Unterüberschrift (Meme Generator) */
 .intro-text {
     font-family: "Montserrat", sans-serif;
     font-weight: 700;
     color: var(--develey-yellow);
     text-transform: uppercase;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     letter-spacing: 2px;
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+/* "Dein Meme" Überschrift: Formatiert nach Marken-Vorgaben */
+h2 {
+    font-family: "Open Sans", sans-serif !important;
+    font-weight: 700 !important;
+    font-size: clamp(1.8rem, 5vw, 2.8rem) !important;
+    color: white !important;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 /* ==========================================
-   5. KAMERA & RESULTAT (FOTO-FRAME)
+   5. KAMERA & MEME-VORSCHAU
 ========================================== */
 .video-wrapper {
     position: relative;
@@ -100,31 +116,35 @@ h1 {
 video, #photo {
     width: 100%;
     border-radius: 20px;
-    border: 5px solid var(--develey-yellow);
-    box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+    /* Gelber Rahmen für Fokus */
+    border: 6px solid var(--develey-yellow); 
+    /* Weichgezeichneter, tiefer Schlagschatten */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
     display: block;
 }
 
-/* MOBIL-OPTIMIERUNG: Hochformat für Smartphones */
+/* MOBIL-OPTIMIERUNG: Hochformat für Portraits */
 @media screen and (max-width: 800px) {
     .video-wrapper {
-        max-width: 90%;
-        aspect-ratio: 3 / 4; /* Portrait Format */
+        max-width: 95%;
+        aspect-ratio: 3 / 4; 
     }
     video, #photo {
         object-fit: cover;
         height: 100%;
     }
-    .develey-logo-fixed {
-        width: 35vw; /* Mobil etwas breiter für Lesbarkeit */
+    h1 {
+        font-size: 2.2rem;
     }
 }
 
 /* ==========================================
-   6. INTERFACE-ELEMENTE (INPUT & BUTTON)
+   6. INTERFACE-ELEMENTE (FORMULAR & BUTTONS)
 ========================================== */
+
+/* Headline Eingabefeld */
 input#headline {
-    width: 95%;
+    width: 90%;
     max-width: 600px;
     padding: 22px;
     margin: 30px auto;
@@ -135,35 +155,32 @@ input#headline {
     font-weight: 700;
     font-size: 1.4rem;
     text-align: center;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
 }
 
+/* Button: Say Develey & Neuer Versuch */
 button {
     background-color: var(--develey-yellow);
     color: black;
     padding: 22px 60px;
     font-family: "Open Sans", sans-serif;
     font-weight: 800;
-    font-size: 1.8rem; /* Großer Button-Text */
+    /* Größerer Button-Text, keine reine Großschreibung */
+    font-size: 1.8rem; 
     border-radius: 60px;
     border: none;
     cursor: pointer;
-    /* Weichgezeichneter, tiefer Schatten */
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    /* Weichgezeichneter Schatten für Tiefe */
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4); 
     transition: transform 0.1s, box-shadow 0.2s;
 }
 
 button:active {
     transform: scale(0.96);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.action-buttons {
-    margin-top: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .hint-text {
-    margin-top: 15px;
-    font-size: 1rem;
-    opacity: 0.9;
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.8);
 }

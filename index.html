@@ -12,22 +12,28 @@
 
     <section class="skew-section bg-green">
         <div class="content-inner">
-            <span class="intro-text">Messe-Special</span>
-            <h1>Moment des Unerwarteten</h1>
+            <span class="intro-text">Meme Generator</span>
+            <h1>Wie reagierst du in #unerwarteten Momenten?</h1>
             
             <div class="generator-box">
-                <video id="video" autoplay playsinline muted></video>
+                <div class="video-wrapper">
+                    <video id="video" autoplay playsinline muted></video>
+                    <canvas id="canvas" style="display:none;"></canvas>
+                </div>
+                
                 <div class="controls">
-                    <input type="text" id="headline" placeholder="Deine Headline...">
-                    <button id="snap">Foto machen & erstellen</button>
+                    <input type="text" id="headline" placeholder="z. B. Wenn der Saucen Vorrat ausgeht...">
+                    <button id="snap">Say Develey</button>
                 </div>
             </div>
 
             <div id="result-container" style="display:none;">
-                <h2>Dein Meme:</h2>
-                <img id="photo" alt="Meme">
-                <div class="action-buttons">
-                    <button id="reset">Neuer Versuch</button>
+                <div class="result-card">
+                    <h2>Dein Meme:</h2>
+                    <img id="photo" alt="Dein generiertes Meme">
+                    <div class="action-buttons">
+                        <button id="reset">Neuer Versuch</button>
+                    </div>
                 </div>
             </div>
         </div>

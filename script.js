@@ -4,25 +4,14 @@ const snap = document.getElementById('snap');
 const resetBtn = document.getElementById('reset');
 const headlineInput = document.getElementById('headline');
 const photo = document.getElementById('photo');
-const resultContainer = document.getElementById('result-container');
-const generatorBox = document.querySelector('.generator-box');
 
-// Bildpfade deiner hochgeladenen Dateien
-const LOGO_SRC = 'Develey_Logo_Ecke.png'; 
-const STOERER_SRC = 'Bereit für das #unerwartete_Störer.png'; 
+// Pfade - Achte darauf, dass die Dateien exakt so in GitHub heißen!
+const LOGO_PATH = 'Develey_Logo_Ecke.png';
+const STOERER_PATH = 'Bereit für das #unerwartete_Störer.png'; 
 
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } }, 
-        audio: false 
-    })
-    .then(stream => {
-        video.srcObject = stream;
-        video.play();
-    })
-    .catch(err => {
-        console.error("Kamera-Fehler: ", err);
-    });
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+    .then(stream => { video.srcObject = stream; video.play(); });
 }
 
 snap.addEventListener('click', () => {
@@ -30,65 +19,52 @@ snap.addEventListener('click', () => {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
+    // 1. Das Foto
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Meme-Text: Extra Fett & größer
-    const headline = headlineInput.value || "Der Moment des Unerwarteten";
-    context.font = "900 65px 'Montserrat', sans-serif"; // Extra Fett (900) & größer
+    // 2. Die Headline (Extrafett, Weichgezeichneter Schatten)
+    const text = headlineInput.value || "Moment des Unerwarteten";
+    context.font = "900 60px Montserrat";
     context.fillStyle = "white";
     context.textAlign = "center";
-    
-    // Weichgezeichneter Schatten für den Text
-    context.shadowColor = "rgba(0, 0, 0, 0.6)";
-    context.shadowBlur = 20; 
-    context.shadowOffsetX = 4;
-    context.shadowOffsetY = 4;
-    
-    context.fillText(headline, canvas.width / 2, 100);
+    context.shadowColor = "rgba(0, 0, 0, 0.5)";
+    context.shadowBlur = 15;
+    context.fillText(text, canvas.width / 2, 80);
 
-    // Bilder laden
+    // 3. Branding & Störer laden
     const logoImg = new Image();
     const stoererImg = new Image();
-    logoImg.src = LOGO_SRC;
-    stoererImg.src = STOERER_SRC;
+    logoImg.src = LOGO_PATH;
+    stoererImg.src = STOERER_PATH;
 
-    let imagesLoaded = 0;
-    const totalImages = 2;
-
-    const finalize = () => {
-        imagesLoaded++;
-        if (imagesLoaded === totalImages) {
-            // Schatten für die Bilder deaktivieren
+    let loaded = 0;
+    const checkLoaded = () => {
+        loaded++;
+        if (loaded === 2) {
+            // Schatten für Bilder aus
             context.shadowBlur = 0;
-            context.shadowOffsetX = 0;
-            context.shadowOffsetY = 0;
-            
-            // Logo unten links
-            const lWidth = 200;
-            const lHeight = (logoImg.height / logoImg.width) * lWidth;
-            context.drawImage(logoImg, 40, canvas.height - lHeight - 40, lWidth, lHeight);
 
-            // Störer unten rechts
-            const sWidth = 280;
+            // Logo klein unten links ins Foto
+            context.drawImage(logoImg, 20, canvas.height - 80, 120, 50);
+
+            // Störer unten rechts ins Foto
+            const sWidth = 250; 
             const sHeight = (stoererImg.height / stoererImg.width) * sWidth;
-            context.drawImage(stoererImg, canvas.width - sWidth - 20, canvas.height - sHeight - 20, sWidth, sHeight);
+            context.drawImage(stoererImg, canvas.width - sWidth - 10, canvas.height - sHeight - 10, sWidth, sHeight);
 
-            photo.src = canvas.toDataURL('image/jpeg', 0.9);
-            generatorBox.style.display = 'none';
-            resultContainer.style.display = 'block';
+            photo.src = canvas.toDataURL('image/jpeg');
+            document.querySelector('.generator-box').style.display = 'none';
+            document.getElementById('result-container').style.display = 'block';
         }
     };
 
-    logoImg.onload = finalize;
-    stoererImg.onload = finalize;
-    
-    // Fallback falls Bilder fehlen
-    logoImg.onerror = finalize;
-    stoererImg.onerror = finalize;
+    logoImg.onload = checkLoaded;
+    stoererImg.onload = checkLoaded;
+    // Falls ein Bild fehlt, trotzdem anzeigen
+    logoImg.onerror = checkLoaded;
+    stoererImg.onerror = checkLoaded;
 });
 
 resetBtn.addEventListener('click', () => {
-    resultContainer.style.display = 'none';
-    generatorBox.style.display = 'block';
-    headlineInput.value = "";
+    location.reload(); // Einfachste Methode für sauberen Reset am Kiosk
 });

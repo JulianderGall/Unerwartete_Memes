@@ -1,49 +1,75 @@
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const snap = document.getElementById('snap');
+const resetBtn = document.getElementById('reset'); // Neuer Reset-Button
 const headlineInput = document.getElementById('headline');
 const photo = document.getElementById('photo');
 const resultContainer = document.getElementById('result-container');
+const generatorBox = document.querySelector('.generator-box');
 
-// 1. Kamera starten
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
-    .then(stream => { video.srcObject = stream; })
-    .catch(err => alert("Kamera-Zugriff verweigert oder nicht unterstützt."));
+const LOGO_SRC = 'logo.png'; 
 
-// 2. Meme generieren
+// 1. Kamera-Zugriff starten
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } }, 
+        audio: false 
+    })
+    .then(stream => {
+        video.srcObject = stream;
+        video.play();
+    })
+    .catch(err => {
+        console.error("Kamera-Fehler: ", err);
+        alert("Kamera konnte nicht geladen werden.");
+    });
+}
+
+// 2. Foto aufnehmen & Meme generieren
 snap.addEventListener('click', () => {
     const context = canvas.getContext('2d');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    // Foto vom Video-Stream auf Canvas zeichnen
+    // Foto zeichnen
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Headline hinzufügen
-    context.font = "bold 40px Arial";
+    // Headline (Montserrat/Open Sans Stil aus develeyBrand.css)
+    const headline = headlineInput.value.toUpperCase() || "DER MOMENT DES UNERWARTETEN";
+    context.font = "bold 45px 'Open Sans', sans-serif";
     context.fillStyle = "white";
     context.textAlign = "center";
-    context.shadowColor = "black";
-    context.shadowBlur = 7;
-    context.fillText(headlineInput.value.toUpperCase(), canvas.width / 2, 60);
+    context.shadowColor = "rgba(0, 0, 0, 0.8)";
+    context.shadowBlur = 10;
+    context.fillText(headline, canvas.width / 2, 80);
 
-    // Logo hinzufügen (Beispielpfad)
-    const logo = new Image();
-    logo.src = 'logo.png'; // Hier dein Develey Logo Pfad
-    logo.onload = () => {
-        context.drawImage(logo, 20, canvas.height - 100, 150, 80); // Position unten links
-        
-        // Störer hinzufügen
-        const stoerer = new Image();
-        stoerer.src = 'stoerer.png'; // Hier dein Störer Pfad
-        stoerer.onload = () => {
-            context.drawImage(stoerer, canvas.width - 170, canvas.height - 170, 150, 150); // Unten rechts
-            
-            // Fertiges Bild anzeigen
-            photo.src = canvas.toDataURL('image/jpeg');
-            video.style.display = 'none';
-            document.querySelector('.controls').style.display = 'none';
-            resultContainer.style.display = 'block';
-        };
+    // Branding hinzufügen
+    const logoImg = new Image();
+    logoImg.src = LOGO_SRC;
+
+    const finalize = () => {
+        photo.src = canvas.toDataURL('image/jpeg', 0.9);
+        generatorBox.style.display = 'none';
+        resultContainer.style.display = 'block';
     };
+
+    logoImg.onload = () => {
+        const logoWidth = 180;
+        const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
+        context.drawImage(logoImg, 30, canvas.height - logoHeight - 30, logoWidth, logoHeight);
+        finalize();
+    };
+    logoImg.onerror = () => finalize();
+});
+
+// 3. Reset-Logik: Zurück zur Kamera
+resetBtn.addEventListener('click', () => {
+    // UI zurücksetzen
+    resultContainer.style.display = 'none';
+    generatorBox.style.display = 'block';
+    
+    // Input-Feld leeren für den nächsten User
+    headlineInput.value = "";
+    
+    console.log("Frame zurückgesetzt für neues Foto.");
 });

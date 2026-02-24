@@ -73,4 +73,4 @@ resetBtn.addEventListener('click', () => {
     
     console.log("Frame zurückgesetzt für neues Foto.");
 });
--
+

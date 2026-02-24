@@ -3,28 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Develey Meme Generator</title>
+    <title>Develey Meme Generator | Moment des Unerwarteten</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Der Moment des Unerwarteten</h1>
-        
-        <video id="video" autoplay playsinline></video>
-        <canvas id="canvas" style="display:none;"></canvas>
-        
-        <div class="controls">
-            <input type="text" id="headline" placeholder="Deine Headline hier...">
-            <button id="snap">Foto machen & Meme erstellen</button>
-        </div>
 
-        <div id="result-container" style="display:none;">
-            <h2>Dein Meme:</h2>
-            <img id="photo" alt="Dein Meme">
-            <p>Lade das Bild herunter oder sende es dir zu!</p>
-            <button onclick="location.reload()">Neues Foto</button>
+    <header class="header-wrapper">
+        <img src="logo.png" class="develey-floating-logo" alt="Develey Logo">
+    </header>
+
+    <section class="skew-section bg-green">
+        <div class="content-inner">
+            <span class="intro-text">Messe-Special</span>
+            <h1>Moment des Unerwarteten</h1>
+            
+            <div class="generator-box">
+                <div class="video-wrapper">
+                    <video id="video" autoplay playsinline muted></video>
+                    <canvas id="canvas" style="display:none;"></canvas>
+                </div>
+                
+                <div class="controls">
+                    <input type="text" id="headline" placeholder="DEINE HEADLINE (Z.B. DER SENF-SCHOCK...)">
+                    <button id="snap" class="btn-main">FOTO MACHEN & ERSTELLEN</button>
+                </div>
+            </div>
+
+            <div id="result-container" style="display:none;">
+                <div class="result-card">
+                    <h2>Dein Meme:</h2>
+                    <img id="photo" alt="Dein generiertes Meme">
+                    
+                    <div class="action-buttons">
+                        <button id="reset" class="btn-secondary">NEUER VERSUCH</button>
+                        <p class="hint-text">Tippe lange auf das Bild zum Speichern</p>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+
     <script src="script.js"></script>
 </body>
 </html>

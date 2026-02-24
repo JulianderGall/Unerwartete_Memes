@@ -5,61 +5,76 @@
     --develey-yellow: rgb(255, 200, 46);
 }
 
-body, html {
+/* Reset für lückenloses Grün bis ganz nach oben */
+html, body {
     margin: 0;
     padding: 0;
-    background-color: var(--develey-green); /* Hintergrundfarbe für lückenloses Design */
+    background-color: var(--develey-green);
 }
 
-/* Das Logo: 25% Breite, bündig oben/links */
+/* Das Logo: Schwebt fixiert oben links */
 .develey-logo-fixed {
-    position: absolute;
+    position: fixed; /* Schwebt über allem */
     top: 0;
     left: 0;
-    width: 25vw; /* 25% der Bildschirmbreite */
-    min-width: 120px; /* Schutz für sehr kleine Handys */
-    max-width: 300px; /* Schutz für große Bildschirme */
-    z-index: 1000;
-    transform: skewY(2deg); /* Um den Skew der Sektion auszugleichen, falls nötig */
+    width: 25vw; /* 25% der Breite */
+    max-width: 280px; /* Begrenzung für große Screens */
+    z-index: 9999; /* Immer ganz oben */
+    transform: none !important; /* Absolut gerade, nicht schräg! */
+    display: block;
 }
 
+/* Die grüne Hauptsektion */
 .skew-section {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    padding: 60px 0; /* Platz für das Logo oben */
     background-color: var(--develey-green);
+    /* Die Schräge beginnt erst unterhalb des Logos */
     transform: skewY(-2deg);
     transform-origin: top left;
-    margin-top: 0;
+    padding-top: 120px; /* Platz schaffen, damit Logo nichts verdeckt */
 }
 
 .content-inner {
     max-width: 900px;
     margin: 0 auto;
-    padding: 40px 20px;
-    transform: skewY(2deg); /* Text wieder gerade rücken */
+    padding: 20px;
+    transform: skewY(2deg); /* Inhalt gerade rücken */
     text-align: center;
     color: white;
 }
 
+/* Typografie Updates */
 h1 {
     font-family: "Open Sans", sans-serif;
-    font-size: clamp(2rem, 8vw, 3.5rem); /* Schrift passt sich Bildschirmgröße an */
+    font-size: clamp(2.5rem, 10vw, 4.2rem); /* 20% größer als vorher */
     font-weight: 800;
-    margin-top: 40px;
+    line-height: 1.1;
+    margin-bottom: 30px;
 }
 
-/* Buttons Mobil-Optimiert */
+/* Button Styling (Keine Großbuchstaben, größerer Text) */
 button {
-    font-size: clamp(1rem, 5vw, 1.6rem);
-    padding: 15px 30px;
-    width: 90%; /* Fast volle Breite auf Mobile */
-    max-width: 400px;
+    background-color: var(--develey-yellow);
+    color: #000;
+    border: none;
+    padding: 20px 40px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    border-radius: 60px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Weichgezeichneter Schatten */
+    transition: transform 0.2s;
 }
 
+button:active { transform: scale(0.96); }
+
+/* Kamera & Ergebnis */
 video, #photo {
     width: 100%;
+    max-width: 650px;
     border-radius: 15px;
-    border: 4px solid var(--develey-yellow);
+    border: 5px solid var(--develey-yellow);
 }

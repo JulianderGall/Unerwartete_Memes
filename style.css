@@ -5,7 +5,7 @@
     --develey-yellow: rgb(255, 200, 46);
 }
 
-/* Reset für lückenloses Grün */
+/* Lückenloses Grün bis ganz nach oben */
 html, body {
     margin: 0;
     padding: 0;
@@ -13,103 +13,86 @@ html, body {
     overflow-x: hidden;
 }
 
-/* 1. SCHWEBENDES LOGO (Bündig & Mobiloptimiert) */
+/* Logo permanent oben links, bündig und gerade */
 .develey-logo-fixed {
-    position: absolute; /* Fixiert oben links im Container */
+    position: fixed;
     top: 0;
     left: 0;
     width: 25vw;
-    max-width: 280px; 
-    min-width: 120px;
-    z-index: 1000;
-    padding: 0;
-    margin: 0;
+    max-width: 280px;
+    z-index: 9999;
+    transform: none !important;
 }
 
-/* 2. HAUPT-CONTAINER (Anlehnung an develeyBrand.css) */
 .skew-section {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    padding: 80px 0;
+    background-color: var(--develey-green);
     transform: skewY(-2deg);
     transform-origin: top left;
-    background-color: var(--develey-green);
+    padding-top: 100px; /* Platz für das Logo */
 }
 
 .content-inner {
     max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
-    transform: skewY(2deg); /* Gerade rücken des Inhalts */
+    transform: skewY(2deg); /* Inhalt gerade rücken */
     text-align: center;
     color: white;
 }
 
-/* 3. TYPOGRAFIE (Groß, gemischte Schreibweise, kein nur Großbuchstaben) */
+/* Überschrift 20% größer */
 h1 {
     font-family: "Open Sans", sans-serif;
-    font-size: clamp(2.2rem, 9vw, 4.2rem); 
+    font-size: clamp(2.5rem, 9vw, 4.5rem);
     font-weight: 800;
     line-height: 1.1;
-    margin-top: 40px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
-/* 4. KAMERA-FRAME (Responsiv & Formatanpassung) */
-.video-wrapper {
-    position: relative;
-    width: 100%;
+.intro-text {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    color: var(--develey-yellow);
+    text-transform: uppercase;
+    font-size: 1.3rem;
+}
+
+/* Headline Eingabefeld */
+input#headline {
+    width: 90%;
     max-width: 600px;
-    margin: 0 auto;
+    padding: 20px;
+    margin: 20px auto;
+    display: block;
+    border-radius: 50px;
+    border: none;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+/* Button Styling (Größer, keine Großbuchstaben, weicher Schatten) */
+button {
+    background-color: var(--develey-yellow);
+    color: black;
+    padding: 22px 50px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    border-radius: 60px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    margin-top: 10px;
 }
 
 video, #photo {
     width: 100%;
+    max-width: 600px;
     border-radius: 15px;
     border: 5px solid var(--develey-yellow);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
 }
-
-/* Hochformat-Zwang für Mobile */
-@media screen and (max-width: 800px) {
-    .video-wrapper {
-        max-width: 90%;
-        aspect-ratio: 3 / 4; /* Erzeugt Hochformat-Feeling */
-    }
-    video {
-        object-fit: cover;
-        height: 100%;
-    }
-    h1 { font-size: 2rem; }
-}
-
-/* 5. INTERFACE ELEMENTE */
-input#headline {
-    width: 90%;
-    max-width: 500px;
-    padding: 18px;
-    margin: 20px 0;
-    border-radius: 50px;
-    border: none;
-    font-family: "Montserrat", sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    text-align: center;
-}
-
-button {
-    background-color: var(--develey-yellow);
-    color: black;
-    padding: 18px 45px;
-    font-family: "Open Sans", sans-serif;
-    font-weight: 800;
-    font-size: 1.4rem;
-    border-radius: 50px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Weicher Schatten */
-    transition: transform 0.1s;
-}
-
-button:active { transform: scale(0.96); }

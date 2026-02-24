@@ -1,55 +1,79 @@
+/* ==========================================
+   1. FONTS & GRUNDEINSTELLUNGEN
+========================================== */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=Open+Sans:wdth,wght@75,800&display=swap');
 
 :root {
     --develey-green: rgb(0, 119, 52);
     --develey-yellow: rgb(255, 200, 46);
+    --skew-angle: -2deg;
 }
 
-/* Lückenloses Grün bis ganz nach oben */
+/* Reset für lückenloses Design bis zum oberen Rand */
 html, body {
     margin: 0;
     padding: 0;
     background-color: var(--develey-green);
     overflow-x: hidden;
+    font-family: "Montserrat", sans-serif;
 }
 
-/* Logo permanent oben links, bündig und gerade */
+/* ==========================================
+   2. SCHWEBENDES LOGO (INTERFACE)
+   Positioniert bündig oben links, nicht schräg
+========================================== */
 .develey-logo-fixed {
     position: fixed;
     top: 0;
     left: 0;
-    width: 25vw;
-    max-width: 280px;
+    width: 25vw; /* 25% der Bildschirmbreite */
+    max-width: 250px; /* Begrenzung, damit es nicht zu groß wird */
+    min-width: 120px;
     z-index: 9999;
-    transform: none !important;
+    transform: none !important; /* Absolut gerade */
+    display: block;
 }
 
+/* ==========================================
+   3. HAUPT-SEKTION (SKEW DESIGN)
+========================================== */
 .skew-section {
     position: relative;
     width: 100%;
     min-height: 100vh;
     background-color: var(--develey-green);
-    transform: skewY(-2deg);
+    
+    /* Die Neigung wie in der develeyBrand.css */
+    transform: skewY(var(--skew-angle));
     transform-origin: top left;
-    padding-top: 100px; /* Platz für das Logo */
+    
+    /* Platz nach oben für das schwebende Logo */
+    padding-top: 100px;
+    margin-top: 0;
 }
 
 .content-inner {
     max-width: 1000px;
     margin: 0 auto;
-    padding: 20px;
-    transform: skewY(2deg); /* Inhalt gerade rücken */
+    padding: 40px 20px;
+    
+    /* Inhalt wieder gerade rücken */
+    transform: skewY(calc(var(--skew-angle) * -1));
     text-align: center;
     color: white;
 }
 
-/* Überschrift 20% größer */
+/* ==========================================
+   4. TYPOGRAFIE (20% GRÖSSER)
+========================================== */
 h1 {
     font-family: "Open Sans", sans-serif;
-    font-size: clamp(2.5rem, 9vw, 4.5rem);
+    /* Dynamische Größe: ca. 20% größer als Standard */
+    font-size: clamp(2.5rem, 9vw, 4.5rem); 
     font-weight: 800;
     line-height: 1.1;
     margin-bottom: 25px;
+    color: white !important;
 }
 
 .intro-text {
@@ -58,41 +82,88 @@ h1 {
     color: var(--develey-yellow);
     text-transform: uppercase;
     font-size: 1.3rem;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 10px;
 }
 
-/* Headline Eingabefeld */
+/* ==========================================
+   5. KAMERA & RESULTAT (FOTO-FRAME)
+========================================== */
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+video, #photo {
+    width: 100%;
+    border-radius: 20px;
+    border: 5px solid var(--develey-yellow);
+    box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+    display: block;
+}
+
+/* MOBIL-OPTIMIERUNG: Hochformat für Smartphones */
+@media screen and (max-width: 800px) {
+    .video-wrapper {
+        max-width: 90%;
+        aspect-ratio: 3 / 4; /* Portrait Format */
+    }
+    video, #photo {
+        object-fit: cover;
+        height: 100%;
+    }
+    .develey-logo-fixed {
+        width: 35vw; /* Mobil etwas breiter für Lesbarkeit */
+    }
+}
+
+/* ==========================================
+   6. INTERFACE-ELEMENTE (INPUT & BUTTON)
+========================================== */
 input#headline {
-    width: 90%;
+    width: 95%;
     max-width: 600px;
-    padding: 20px;
-    margin: 20px auto;
+    padding: 22px;
+    margin: 30px auto;
     display: block;
     border-radius: 50px;
     border: none;
     font-family: "Montserrat", sans-serif;
     font-weight: 700;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     text-align: center;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* Button Styling (Größer, keine Großbuchstaben, weicher Schatten) */
 button {
     background-color: var(--develey-yellow);
     color: black;
-    padding: 22px 50px;
+    padding: 22px 60px;
     font-family: "Open Sans", sans-serif;
     font-weight: 800;
-    font-size: 1.8rem;
+    font-size: 1.8rem; /* Großer Button-Text */
     border-radius: 60px;
     border: none;
     cursor: pointer;
+    /* Weichgezeichneter, tiefer Schatten */
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-    margin-top: 10px;
+    transition: transform 0.1s, box-shadow 0.2s;
 }
 
-video, #photo {
-    width: 100%;
-    max-width: 600px;
-    border-radius: 15px;
-    border: 5px solid var(--develey-yellow);
+button:active {
+    transform: scale(0.96);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.action-buttons {
+    margin-top: 30px;
+}
+
+.hint-text {
+    margin-top: 15px;
+    font-size: 1rem;
+    opacity: 0.9;
 }

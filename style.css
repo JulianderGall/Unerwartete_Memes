@@ -1,0 +1,15 @@
+body {
+    font-family: sans-serif;
+    background: #f4f4f4;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+.container { max-width: 600px; margin: auto; }
+video { width: 100%; border-radius: 15px; background: #000; }
+#photo { width: 100%; border: 5px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+input { width: 90%; padding: 15px; margin: 10px 0; font-size: 18px; border-radius: 8px; border: 1px solid #ccc; }
+button { 
+    background: #e30613; color: white; border: none; padding: 15px 30px; 
+    font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; 
+}

@@ -8,32 +8,26 @@
 </head>
 <body>
 
+    <img src="Develey_Logo_Ecke.png" class="develey-logo-fixed" alt="Develey Logo">
+
     <section class="skew-section bg-green">
-        <img src="Develey_Logo_Ecke.png" class="develey-logo-fixed" alt="Develey Logo">
-        
         <div class="content-inner">
             <span class="intro-text">Messe-Special</span>
             <h1>Moment des Unerwarteten</h1>
             
             <div class="generator-box">
-                <div class="video-wrapper">
-                    <video id="video" autoplay playsinline muted></video>
-                    <canvas id="canvas" style="display:none;"></canvas>
-                </div>
-                
+                <video id="video" autoplay playsinline muted></video>
                 <div class="controls">
                     <input type="text" id="headline" placeholder="Deine Headline...">
-                    <button id="snap" class="btn-main">Foto machen & erstellen</button>
+                    <button id="snap">Foto machen & erstellen</button>
                 </div>
             </div>
 
             <div id="result-container" style="display:none;">
-                <div class="result-card">
-                    <h2>Dein Meme:</h2>
-                    <img id="photo" alt="Meme">
-                    <div class="action-buttons">
-                        <button id="reset" class="btn-secondary">Neuer Versuch</button>
-                    </div>
+                <h2>Dein Meme:</h2>
+                <img id="photo" alt="Meme">
+                <div class="action-buttons">
+                    <button id="reset">Neuer Versuch</button>
                 </div>
             </div>
         </div>

@@ -52,10 +52,9 @@ html, body {
 
 .content-inner {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px; /* Vergrößert, damit der Frame mehr Platz in die Breite hat */
     padding: 0 5%;
     transform: skewY(calc(var(--skew-angle) * -1));
-    /* Alles im Container perfekt zentrieren */
     text-align: center;
     color: white;
     display: flex;
@@ -65,14 +64,14 @@ html, body {
 }
 
 /* ==========================================
-   4. TYPOGRAFIE - PERFEKT ZENTRIERT
+   4. TYPOGRAFIE - PERFEKT ZENTRIERT & GESTRAFFT
 ========================================== */
 .intro-text {
     font-weight: 700;
     color: var(--develey-yellow);
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin: 0 auto 0.5vh auto;
+    margin: 0 auto 0.5vh auto; /* Abstände minimiert für mehr Foto-Platz */
     font-size: clamp(0.7rem, 1.8vh, 1.1rem);
     text-align: center;
     width: 100%;
@@ -84,8 +83,7 @@ h1 {
     font-weight: 800;
     line-height: 1.1;
     color: white !important;
-    /* Zentrierung erzwungen, kein asymmetrisches Padding mehr */
-    margin: 1vh auto 2vh auto; 
+    margin: 0.5vh auto 1.5vh auto; /* Gestrafft */
     padding: 0; 
     font-size: clamp(1.4rem, 4vh, 3.2rem);
     width: 100%;
@@ -98,12 +96,12 @@ h2 {
     font-weight: 700 !important;
     font-size: clamp(1.2rem, 3vh, 2.2rem) !important;
     color: white !important;
-    margin: 1vh auto !important;
+    margin: 0.5vh auto 1vh auto !important;
     text-align: center;
 }
 
 /* ==========================================
-   5. FOTO FRAME - FESTES 3:2 FORMAT, DYNAMISCH
+   5. FOTO FRAME - MAXIMALE GRÖSSE, STRIKT 3:2
 ========================================== */
 .video-wrapper {
     position: relative;
@@ -116,15 +114,14 @@ h2 {
 video, #photo {
     width: 100%;
     
-    /* DIE MAGISCHE RECHNUNG: 
-       Nimm entweder 90% der Bildschirmbreite (auf schmalen Handys) 
-       ODER berechne die Breite so, dass die Höhe maximal 42vh erreicht (1.5 = 3:2 Ratio).
-       So wird das Bild so groß wie möglich, ohne jemals die Buttons wegzudrücken! */
-    max-width: min(90vw, calc(42vh * 1.5)); 
+    /* DIE MAGISCHE RECHNUNG FÜR MAXIMALEN PLATZ: 
+       Nimm 95% der Bildschirmbreite ODER maximal 55vh Höhe umgerechnet in die Breite (55 * 1.5).
+       Dadurch wird der Frame riesig, aber drückt niemals die Buttons nach unten weg! */
+    max-width: min(95vw, calc(55vh * 1.5)); 
     
-    /* Zwingt den Frame kompromisslos in das 3:2 (15:10) Format */
+    /* Zwingt den Frame immer in exakt 3:2 Format (15:10) */
     aspect-ratio: 3 / 2;
-    object-fit: cover;
+    object-fit: cover; /* Verhindert Verzerrung im Videofeed */
     
     border-radius: 20px;
     border: 6px solid var(--develey-yellow);
@@ -147,7 +144,7 @@ input#headline {
     width: 90%;
     max-width: 500px;
     padding: 1.2vh 20px;
-    margin: 2vh auto;
+    margin: 1.5vh auto;
     border-radius: 50px;
     border: none;
     font-weight: 700;
@@ -162,7 +159,7 @@ input#headline {
     gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 1.5vh;
+    margin-top: 1vh;
 }
 
 button {
@@ -210,7 +207,7 @@ button#download {
         font-size: clamp(1.4rem, 4vh, 2.2rem);
     }
     video, #photo {
-        /* Auf Handys ist die Höhe oft knapper, wir schützen die Buttons */
-        max-width: min(90vw, calc(35vh * 1.5)); 
+        /* Auf Handys ist die Höhe oft knapper, wir begrenzen auf ca. 45vh Höhe */
+        max-width: min(95vw, calc(45vh * 1.5)); 
     }
 }

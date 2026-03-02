@@ -1,6 +1,6 @@
 /**
  * script.js - Develey Meme Generator
- * Fokus: Bündiges Logo/Störer, 15:10 Format & dynamische Größenanpassung (max 3 Zeilen + Wortbreiten-Check)
+ * Features: High-Res Export (15:10), dynamische Textgröße (max 3 Zeilen), Smart Camera Detection
  */
 
 const video = document.getElementById('video');
@@ -14,16 +14,38 @@ const photo = document.getElementById('photo');
 const resultContainer = document.getElementById('result-container');
 const generatorBox = document.querySelector('.generator-box');
 
-// Bildquellen (Pfade aus deinem Repository)
+// Bildquellen (Pfade aus dem Repository)
 const LOGO_SRC = 'Develey_Logo_Ecke.png';
-// Fix: Das '#' im Dateinamen muss als '%23' maskiert werden
+// Fix: Das '#' im Dateinamen muss in der URL als '%23' maskiert werden
 const STOERER_SRC = 'Bereit für das %23unerwartete_Störer.png';
 
-let currentFacingMode = "user"; // Startet standardmäßig mit der Frontkamera
+let currentFacingMode = "user"; // Startet standardmäßig mit der Selfie-/Frontkamera
 
-// 1. Kamera-Logik
+// 1. Geräteprüfung: "Kamera drehen" Button nur anzeigen, wenn >= 2 Kameras da sind
+async function checkCamerasAndShowButton() {
+    if (!switchCamBtn) return; 
+
+    try {
+        // Fragt alle verfügbaren Medien-Geräte ab
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        
+        // Filtert nur die Videokameras heraus
+        const videoInputDevices = devices.filter(device => device.kind === 'videoinput');
+
+        // Wenn das iPad/Gerät mehr als eine Kamera hat -> Button einblenden
+        if (videoInputDevices.length > 1) {
+            switchCamBtn.style.display = 'inline-block'; 
+        } else {
+            switchCamBtn.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Kamerainformationen:', error);
+        switchCamBtn.style.display = 'none';
+    }
+}
+
+// 2. Kamera-Stream starten (und alte Streams vorher sauber beenden)
 function startCamera(facingMode) {
-    // Falls bereits ein Stream läuft, diesen zuerst beenden
     if (video.srcObject) {
         video.srcObject.getTracks().forEach(track => track.stop());
     }
@@ -31,7 +53,7 @@ function startCamera(facingMode) {
     const constraints = {
         video: { 
             facingMode: facingMode,
-            aspectRatio: 1.5 // 15:10 = 3:2
+            aspectRatio: 1.5 // Erzwingt bei unterstützten Geräten direkt das 15:10 Format
         },
         audio: false
     };
@@ -48,17 +70,19 @@ function startCamera(facingMode) {
     }
 }
 
-// Beim ersten Laden die Kamera starten
-startCamera(currentFacingMode);
+// Initialisierung bei Seitenaufruf
+window.addEventListener('DOMContentLoaded', () => {
+    checkCamerasAndShowButton();
+    startCamera(currentFacingMode);
+});
 
-// Kamera Umschalt-Event
+// Kamera Umschalt-Event ("Kamera drehen" Button)
 switchCamBtn.addEventListener('click', () => {
-    // Wechselt zwischen "user" (Front) und "environment" (Rückkamera)
     currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
     startCamera(currentFacingMode);
 });
 
-// --- Hilfsfunktion: Berechnet die umgebrochenen Zeilen OHNE sie zu zeichnen ---
+// --- Hilfsfunktion: Berechnet die Zeilenumbrüche OHNE sie direkt zu zeichnen ---
 function getWrappedLines(context, text, maxWidth) {
     const words = text.split(' ');
     const lines = [];
@@ -82,15 +106,15 @@ function getWrappedLines(context, text, maxWidth) {
     return lines;
 }
 
-// 2. Foto aufnehmen & Meme generieren (Button: "Say Develey")
+// 3. Foto aufnehmen & Meme generieren (Button: "Say Develey")
 snap.addEventListener('click', () => {
     const context = canvas.getContext('2d');
     
-    // HOCHAUFLÖSENDES FORMAT ERZWINGEN (2400 x 1600 = 15:10 Format)
+    // HOCHAUFLÖSENDES FORMAT ERZWINGEN (2400 x 1600 = exakt 15:10)
     canvas.width = 2400;
     canvas.height = 1600;
 
-    // A) Kamera-Bild zeichnen (mit Center-Crop auf 15:10)
+    // A) Kamera-Bild zeichnen (mit Center-Crop, um Verzerrungen zu vermeiden)
     const videoRatio = video.videoWidth / video.videoHeight;
     const canvasRatio = canvas.width / canvas.height;
     
@@ -111,15 +135,14 @@ snap.addEventListener('click', () => {
     // B) Dynamische Größenanpassung des Headline-Textes
     const text = headlineInput.value || "Wie reagierst du?";
     
-    // Konfiguration für die Größenanpassung
-    const maxFontSize = 130; // Startgröße
-    const minFontSize = 60;  // Minimale lesbare Größe
-    const textX = 760;
-    const textYStart = 200; // y-Position der ersten Zeile
+    const maxFontSize = 130; // Maximale Startgröße
+    const minFontSize = 60;  // Minimale noch lesbare Größe
+    const textX = 760;       // Abstand von links (Platz für Logo)
+    const textYStart = 200;  // Y-Position der ersten Zeile
     const maxWidth = canvas.width - 850; // Platz nach rechts
-    const maxLines = 3; // Maximale Zeilenanzahl
+    const maxLines = 3;      // Harte Grenze: Maximal 3 Zeilen
 
-    // Canvas-Kontext für Text-Setup (Schatten etc.)
+    // Styling für den Text
     context.fillStyle = "white";
     context.textAlign = "left"; 
     context.shadowColor = "rgba(0, 0, 0, 0.7)";
@@ -131,17 +154,15 @@ snap.addEventListener('click', () => {
     let lines = [];
     let textFits = false;
 
-    // Iterative Verkleinerung der Schriftgröße, bis der Text BEIDE Bedingungen erfüllt:
-    // 1. Maximal 3 Zeilen (maxLines)
-    // 2. Keine Zeile/kein Wort breiter als maxWidth
+    // Iterative Verkleinerung der Schriftgröße, bis der Text perfekt passt
     while (fontSize >= minFontSize && !textFits) {
         context.font = `900 ${fontSize}px 'Montserrat', sans-serif`;
         lines = getWrappedLines(context, text, maxWidth);
         
-        // Bedingung 1: Passt es vertikal?
+        // Bedingung 1: Passt es vertikal? (Maximal 3 Zeilen)
         let verticalFits = lines.length <= maxLines;
 
-        // Bedingung 2: Passt jede einzelne Zeile horizontal? (Lange Wörter)
+        // Bedingung 2: Passt jede einzelne Zeile horizontal? (Verhindert abgeschnittene lange Wörter)
         let horizontalFits = true;
         for (let i = 0; i < lines.length; i++) {
             if (context.measureText(lines[i]).width > maxWidth) {
@@ -150,25 +171,24 @@ snap.addEventListener('click', () => {
             }
         }
 
-        // Der Text passt nur, wenn BEIDE Kriterien erfüllt sind.
+        // Der Text passt nur, wenn BEIDE Kriterien erfüllt sind
         if (verticalFits && horizontalFits) {
             textFits = true;
         } else {
-            fontSize -= 10; // Schriftgröße schrittweise verringern
+            fontSize -= 10; // Schriftgröße verringern und erneut testen
         }
     }
 
-    // Fallback: Falls der Text selbst bei minFontSize zu lang ist, nimm nur die ersten 3 Zeilen
+    // Fallback: Falls ein Wort extrem lang ist, auf minFontSize setzen und nach 3 Zeilen kappen
     if (!textFits) {
         fontSize = minFontSize;
         context.font = `900 ${fontSize}px 'Montserrat', sans-serif`;
         lines = getWrappedLines(context, text, maxWidth).slice(0, maxLines); 
     }
 
-    // Zeilenhöhe proportional zur gefundenen Schriftgröße berechnen
-    const lineHeight = fontSize * 1.15; 
+    const lineHeight = fontSize * 1.15; // Dynamischer Zeilenabstand
 
-    // Zeichnen des finalen, angepassten Textes
+    // Zeichnen des finalen Textes
     lines.forEach((line, index) => {
         context.fillText(line, textX, textYStart + (index * lineHeight));
     });
@@ -184,13 +204,14 @@ snap.addEventListener('click', () => {
     let loadedCount = 0;
     const finalizeImage = () => {
         loadedCount++;
+        // Erst wenn Logo UND Störer geladen sind, wird gezeichnet
         if (loadedCount === 2) {
-            // Schatten für Branding-Elemente deaktivieren
+            // Schatten für die Bilder deaktivieren
             context.shadowBlur = 0;
             context.shadowOffsetX = 0;
             context.shadowOffsetY = 0;
             
-            // LOGO OBEN LINKS - Absolut bündig (0, 0)
+            // LOGO OBEN LINKS - Absolut bündig
             const lWidth = canvas.width * 0.30; 
             const lHeight = (logoImg.height / logoImg.width) * lWidth;
             context.drawImage(logoImg, 0, 0, lWidth, lHeight);
@@ -200,7 +221,7 @@ snap.addEventListener('click', () => {
             const sHeight = (stoererImg.height / stoererImg.width) * sWidth;
             context.drawImage(stoererImg, canvas.width - sWidth, canvas.height - sHeight, sWidth, sHeight);
 
-            // JPEG generieren (Quality 0.95)
+            // JPEG für den Output generieren (0.95 = Top-Qualität für Druck)
             photo.src = canvas.toDataURL('image/jpeg', 0.95);
             generatorBox.style.display = 'none';
             resultContainer.style.display = 'block';
@@ -213,15 +234,15 @@ snap.addEventListener('click', () => {
     stoererImg.onerror = finalizeImage;
 });
 
-// 3. Download Logik
+// 4. Download Logik (Lokal ausführen, ohne Server)
 downloadBtn.addEventListener('click', () => {
     const link = document.createElement('a');
-    link.download = 'develey_meme_unerwartet.jpg'; // Dateiname
+    link.download = 'develey_meme_unerwartet.jpg'; 
     link.href = photo.src; 
     link.click();
 });
 
-// 4. Reset-Funktion
+// 5. Reset-Funktion
 resetBtn.addEventListener('click', () => {
     location.reload(); 
 });

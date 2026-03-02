@@ -129,3 +129,6 @@ downloadBtn.addEventListener('click', () => {
 
 // Reset Logik
 resetBtn.addEventListener('click', () => { location.reload(); });
+
+// Reset Logik
+resetBtn.addEventListener('click', () => { location.reload(); });

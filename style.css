@@ -18,7 +18,7 @@ html, body {
     padding: 0;
     width: 100%;
     height: 100dvh; 
-    overflow: hidden; 
+    overflow: hidden; /* Verhindert Scrollen absolut zuverlässig */
     background-color: var(--develey-green);
     font-family: "Montserrat", sans-serif;
 }
@@ -54,6 +54,8 @@ html, body {
     width: 100%;
     max-width: 1400px; 
     padding: 0 5%;
+    /* Etwas Platz nach unten lassen, damit der Disclaimer nicht überlagert */
+    padding-bottom: 4vh; 
     transform: skewY(calc(var(--skew-angle) * -1));
     text-align: center;
     color: white;
@@ -108,13 +110,20 @@ h2 {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin: 0 auto;
+    /* Deutlich mehr Abstand nach unten, damit der Schatten nicht über das Textfeld ragt */
+    margin: 0 auto 3.5vh auto; 
+}
+
+/* Auch das fertige Foto braucht den gleichen Abstand nach unten */
+#photo {
+    margin-bottom: 3.5vh;
 }
 
 video, #photo {
     width: 100%;
-    max-width: min(95vw, calc(55vh * 1.5)); 
-    aspect-ratio: 3 / 2;
+    /* Maximal-Höhe leicht reduziert, um Platz für den neuen Abstand (margin-bottom) zu schaffen */
+    max-width: min(95vw, calc(50vh * 1.5)); 
+    aspect-ratio: 3 / 2; /* Bleibt strikt 15:10 */
     object-fit: cover; 
     border-radius: 20px;
     border: 6px solid var(--develey-yellow);
@@ -137,7 +146,7 @@ input#headline {
     width: 90%;
     max-width: 500px;
     padding: 1.2vh 20px;
-    margin: 1.5vh auto;
+    margin: 0 auto 1.5vh auto;
     border-radius: 50px;
     border: none;
     font-weight: 700;
@@ -180,29 +189,33 @@ button#download, button#switch-cam {
     border: 3px solid var(--develey-green);
 }
 
-.hint-text {
-    margin-top: 1vh;
-    font-size: clamp(0.85rem, 1.8vh, 1.1rem);
-    color: rgba(255,255,255,0.9);
+/* Standardmäßig versteckt, wird nur per JS eingeblendet, wenn 2 Kameras existieren */
+button#switch-cam {
+    display: none; 
 }
 
 /* ==========================================
-   7. DATENSCHUTZ-DISCLAIMER
+   7. DEZENTER DATENSCHUTZ-DISCLAIMER
 ========================================== */
 .privacy-disclaimer {
-    margin-top: 2.5vh;
-    width: 90%;
-    max-width: 800px;
-    font-size: clamp(0.65rem, 1.2vh, 0.85rem);
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.4;
+    position: fixed;
+    bottom: 1vh; /* Klebt dezent am unteren Bildschirmrand */
+    left: 0;
+    width: 100%;
     text-align: center;
+    font-size: clamp(0.6rem, 1.2vh, 0.75rem);
+    color: rgba(255, 255, 255, 0.6); /* Leicht transparentes Weiß/Grau */
+    line-height: 1.4;
+    padding: 0 15px;
+    z-index: 1000;
+    pointer-events: none; /* Verhindert, dass der Text Klicks blockiert... */
 }
 
 .privacy-disclaimer a {
-    color: var(--develey-yellow);
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: underline;
-    font-weight: 700;
+    font-weight: normal;
+    pointer-events: auto; /* ...außer auf dem Link selbst, der muss klickbar bleiben */
 }
 
 .privacy-disclaimer a:hover {
@@ -217,16 +230,15 @@ button#download, button#switch-cam {
         width: 35vw; 
     }
     .skew-section {
-        padding-top: 60px; 
+        padding-top: 50px; 
     }
     h1 {
         font-size: clamp(1.4rem, 4vh, 2.2rem);
     }
     video, #photo {
-        max-width: min(95vw, calc(45vh * 1.5)); 
+        max-width: min(95vw, calc(42vh * 1.5)); 
     }
-    .privacy-disclaimer {
-        margin-top: 2vh;
-        font-size: 0.65rem;
+    .video-wrapper, #photo {
+        margin-bottom: 2vh; /* Auf Mobile etwas geringerer Abstand */
     }
 }

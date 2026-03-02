@@ -18,7 +18,7 @@ html, body {
     padding: 0;
     width: 100%;
     height: 100dvh; 
-    overflow: hidden; /* Verhindert Scrollen absolut zuverlässig */
+    overflow: hidden; 
     background-color: var(--develey-green);
     font-family: "Montserrat", sans-serif;
 }
@@ -52,7 +52,7 @@ html, body {
 
 .content-inner {
     width: 100%;
-    max-width: 1400px; /* Vergrößert, damit der Frame mehr Platz in die Breite hat */
+    max-width: 1400px; 
     padding: 0 5%;
     transform: skewY(calc(var(--skew-angle) * -1));
     text-align: center;
@@ -64,14 +64,14 @@ html, body {
 }
 
 /* ==========================================
-   4. TYPOGRAFIE - PERFEKT ZENTRIERT & GESTRAFFT
+   4. TYPOGRAFIE
 ========================================== */
 .intro-text {
     font-weight: 700;
     color: var(--develey-yellow);
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin: 0 auto 0.5vh auto; /* Abstände minimiert für mehr Foto-Platz */
+    margin: 0 auto 0.5vh auto; 
     font-size: clamp(0.7rem, 1.8vh, 1.1rem);
     text-align: center;
     width: 100%;
@@ -83,7 +83,7 @@ h1 {
     font-weight: 800;
     line-height: 1.1;
     color: white !important;
-    margin: 0.5vh auto 1.5vh auto; /* Gestrafft */
+    margin: 0.5vh auto 1.5vh auto; 
     padding: 0; 
     font-size: clamp(1.4rem, 4vh, 3.2rem);
     width: 100%;
@@ -101,7 +101,7 @@ h2 {
 }
 
 /* ==========================================
-   5. FOTO FRAME - MAXIMALE GRÖSSE, STRIKT 3:2
+   5. FOTO FRAME
 ========================================== */
 .video-wrapper {
     position: relative;
@@ -113,16 +113,9 @@ h2 {
 
 video, #photo {
     width: 100%;
-    
-    /* DIE MAGISCHE RECHNUNG FÜR MAXIMALEN PLATZ: 
-       Nimm 95% der Bildschirmbreite ODER maximal 55vh Höhe umgerechnet in die Breite (55 * 1.5).
-       Dadurch wird der Frame riesig, aber drückt niemals die Buttons nach unten weg! */
     max-width: min(95vw, calc(55vh * 1.5)); 
-    
-    /* Zwingt den Frame immer in exakt 3:2 Format (15:10) */
     aspect-ratio: 3 / 2;
-    object-fit: cover; /* Verhindert Verzerrung im Videofeed */
-    
+    object-fit: cover; 
     border-radius: 20px;
     border: 6px solid var(--develey-yellow);
     box-shadow: 0 15px 40px rgba(0,0,0,0.5);
@@ -181,7 +174,7 @@ button:active {
     transform: scale(0.96);
 }
 
-button#download {
+button#download, button#switch-cam {
     background-color: white;
     color: var(--develey-green);
     border: 3px solid var(--develey-green);
@@ -194,20 +187,46 @@ button#download {
 }
 
 /* ==========================================
-   7. MOBILE ANPASSUNG (Handy & kleines iPad)
+   7. DATENSCHUTZ-DISCLAIMER
+========================================== */
+.privacy-disclaimer {
+    margin-top: 2.5vh;
+    width: 90%;
+    max-width: 800px;
+    font-size: clamp(0.65rem, 1.2vh, 0.85rem);
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.4;
+    text-align: center;
+}
+
+.privacy-disclaimer a {
+    color: var(--develey-yellow);
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+.privacy-disclaimer a:hover {
+    color: white;
+}
+
+/* ==========================================
+   8. MOBILE ANPASSUNG
 ========================================== */
 @media screen and (max-width: 800px) {
     .develey-logo-fixed {
         width: 35vw; 
     }
     .skew-section {
-        padding-top: 60px; /* Platz für das Logo oben schaffen */
+        padding-top: 60px; 
     }
     h1 {
         font-size: clamp(1.4rem, 4vh, 2.2rem);
     }
     video, #photo {
-        /* Auf Handys ist die Höhe oft knapper, wir begrenzen auf ca. 45vh Höhe */
         max-width: min(95vw, calc(45vh * 1.5)); 
+    }
+    .privacy-disclaimer {
+        margin-top: 2vh;
+        font-size: 0.65rem;
     }
 }

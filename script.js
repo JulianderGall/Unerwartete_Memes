@@ -1,6 +1,5 @@
 /**
- * script.js - Finale Version
- * Fokus: Bündiges Logo (0,0), bündiger Störer & zweizeilige Headline
+ * script.js - Finale Version mit fixem 15x10 (1.5) Format
  */
 
 const video = document.getElementById('video');
@@ -12,32 +11,18 @@ const photo = document.getElementById('photo');
 const resultContainer = document.getElementById('result-container');
 const generatorBox = document.querySelector('.generator-box');
 
-// Bildquellen (Pfade aus deinem Repository)
 const LOGO_SRC = 'Develey_Logo_Ecke.png';
-// Fix: Das '#' im Dateinamen muss als '%23' maskiert werden
 const STOERER_SRC = 'Bereit für das %23unerwartete_Störer.png';
 
-// 1. Kamera-Zugriff starten (Mobil-Optimiert)
-const constraints = {
-    video: { 
-        facingMode: "user",
-        aspectRatio: window.innerWidth < 800 ? 0.75 : 1.77 
-    },
-    audio: false
-};
-
+// Kamera: Wir fordern bevorzugt ein 1.5 (15:10) Format an
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia(constraints)
-    .then(stream => {
-        video.srcObject = stream;
-        video.play();
+    navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: "user", aspectRatio: 1.5 } 
     })
-    .catch(err => {
-        console.error("Kamera-Fehler: ", err);
-    });
+    .then(stream => { video.srcObject = stream; video.play(); })
+    .catch(err => console.error("Kamera Fehler:", err));
 }
 
-// Hilfsfunktion für den automatischen Textumbruch (Zweizeilig)
 function wrapText(context, text, x, y, maxWidth, lineHeight) {
     const words = text.split(' ');
     let line = '';
@@ -55,78 +40,83 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
     context.fillText(line, x, y);
 }
 
-// 2. Meme generieren (Button: "Say Develey")
 snap.addEventListener('click', () => {
     const context = canvas.getContext('2d');
     
-    // Canvas-Größe an den Video-Stream anpassen
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    // WIR ERZWINGEN EXAKT 1500x1000 (15:10 FORMAT)
+    canvas.width = 1500;
+    canvas.height = 1000;
 
-    // A) Das Live-Bild auf den Canvas zeichnen
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Berechnung für Center-Crop (schneidet Ränder ab, verhindert Verzerrung)
+    const videoRatio = video.videoWidth / video.videoHeight;
+    const canvasRatio = canvas.width / canvas.height;
+    
+    let drawWidth = video.videoWidth;
+    let drawHeight = video.videoHeight;
+    let offsetX = 0;
+    let offsetY = 0;
 
-    // B) Headline-Text zeichnen (Extra Fett & Weicher Schatten)
+    if (videoRatio > canvasRatio) {
+        // Video ist breiter als 15:10 -> links & rechts abschneiden
+        drawWidth = video.videoHeight * canvasRatio;
+        offsetX = (video.videoWidth - drawWidth) / 2;
+    } else {
+        // Video ist höher als 15:10 -> oben & unten abschneiden
+        drawHeight = video.videoWidth / canvasRatio;
+        offsetY = (video.videoHeight - drawHeight) / 2;
+    }
+
+    // Gecropptes Foto auf das fixe 15x10 Canvas zeichnen
+    context.drawImage(video, offsetX, offsetY, drawWidth, drawHeight, 0, 0, canvas.width, canvas.height);
+
+    // Text formatieren (angepasst an die neue feste Auflösung)
     const text = headlineInput.value || "Wie reagierst du?";
-    context.font = "900 60px 'Montserrat', sans-serif";
+    context.font = "900 85px 'Montserrat', sans-serif";
     context.fillStyle = "white";
     context.textAlign = "left"; 
-    
-    // Weichgezeichneter Schatten für den Text
     context.shadowColor = "rgba(0, 0, 0, 0.7)";
-    context.shadowBlur = 20; 
-    context.shadowOffsetX = 4;
-    context.shadowOffsetY = 4;
-    
-    // Headline rückt nach rechts (x=350), um dem bündigen Logo Platz zu machen
-    wrapText(context, text, 350, 95, canvas.width - 380, 65);
+    context.shadowBlur = 20;
+    context.shadowOffsetX = 5;
+    context.shadowOffsetY = 5;
 
-    // C) Branding (Logo & Störer) laden
-    const logoImg = new Image();
-    const stoererImg = new Image();
-    
-    logoImg.crossOrigin = "anonymous";
-    stoererImg.crossOrigin = "anonymous";
-    
-    logoImg.src = LOGO_SRC;
-    stoererImg.src = STOERER_SRC;
+    // Headline rückt nach rechts
+    wrapText(context, text, 480, 130, canvas.width - 520, 95);
 
-    let loadedCount = 0;
-    const finalizeImage = () => {
-        loadedCount++;
-        if (loadedCount === 2) {
-            // Schatten für Branding-Elemente (weichgezeichnet)
-            context.shadowColor = "rgba(0, 0, 0, 0.4)";
-            context.shadowBlur = 12;
-            context.shadowOffsetX = 5;
-            context.shadowOffsetY = 5;
+    const logo = new Image();
+    const stoerer = new Image();
+    logo.crossOrigin = "anonymous";
+    stoerer.crossOrigin = "anonymous";
+    logo.src = LOGO_SRC;
+    stoerer.src = STOERER_SRC;
+
+    let loaded = 0;
+    const drawBranding = () => {
+        loaded++;
+        if (loaded === 2) {
+            context.shadowBlur = 0;
+            context.shadowOffsetX = 0;
+            context.shadowOffsetY = 0;
             
-            // LOGO OBEN LINKS - Absolut bündig (0, 0) und vergrößert
+            // LOGO OBEN LINKS - Bündig an die fixe Auflösung angepasst
             const lWidth = canvas.width * 0.30; 
-            const lHeight = (logoImg.height / logoImg.width) * lWidth;
-            context.drawImage(logoImg, 0, 0, lWidth, lHeight);
+            const lHeight = (logo.height / logo.width) * lWidth;
+            context.drawImage(logo, 0, 0, lWidth, lHeight);
 
-            // STÖRER UNTEN RECHTS - Absolut bündig zum Rand
-            const sWidth = 340;
-            const sHeight = (stoererImg.height / stoererImg.width) * sWidth;
-            context.drawImage(stoererImg, canvas.width - sWidth, canvas.height - sHeight, sWidth, sHeight);
+            // STÖRER UNTEN RECHTS - Bündig
+            const sWidth = 450; 
+            const sHeight = (stoerer.height / stoerer.width) * sWidth;
+            context.drawImage(stoerer, canvas.width - sWidth, canvas.height - sHeight, sWidth, sHeight);
 
-            // Ergebnis anzeigen
             photo.src = canvas.toDataURL('image/jpeg', 0.9);
             generatorBox.style.display = 'none';
             resultContainer.style.display = 'block';
         }
     };
 
-    logoImg.onload = finalizeImage;
-    stoererImg.onload = finalizeImage;
-    
-    // Fallback bei Ladefehlern
-    logoImg.onerror = finalizeImage;
-    stoererImg.onerror = finalizeImage;
+    logo.onload = drawBranding;
+    stoerer.onload = drawBranding;
+    logo.onerror = drawBranding;
+    stoerer.onerror = drawBranding;
 });
 
-// 3. Reset-Funktion
-resetBtn.addEventListener('click', () => {
-    location.reload(); 
-});
+resetBtn.addEventListener('click', () => { location.reload(); });

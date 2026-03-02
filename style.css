@@ -24,13 +24,14 @@ html, body {
 }
 
 /* ==========================================
-   2. LOGO (MARKIERUNG 1: GROSS & BÜNDIG)
+   2. LOGO (MARKIERUNG 1: GRÖSSER & BÜNDIG)
 ========================================== */
 .develey-logo-fixed {
     position: fixed;
     top: 0;
     left: 0;
-    width: clamp(160px, 25vw, 420px); /* Großzügige Breite für Markenpräsenz */
+    /* Größe wie gewünscht präsenter */
+    width: clamp(160px, 25vw, 400px); 
     z-index: 9999;
     transform: none !important;
 }
@@ -52,10 +53,11 @@ html, body {
 
 .content-inner {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1200px;
     padding: 0 5%;
     transform: skewY(calc(var(--skew-angle) * -1));
-    text-align: center; /* ZENTRIERTE AUSRICHTUNG */
+    /* Vollständige Zentrierung für alle Inhalte */
+    text-align: center;
     color: white;
     display: flex;
     flex-direction: column;
@@ -64,23 +66,23 @@ html, body {
 }
 
 /* ==========================================
-   4. TYPOGRAFIE - PERFEKT ZENTRIERT
+   4. TYPOGRAFIE - JETZT VOLLSTÄNDIG ZENTRIERT
 ========================================== */
 h1 {
     font-family: "Open Sans", sans-serif;
     font-weight: 800;
     line-height: 1.1;
     color: white !important;
-    /* Platz für das Logo oben links schaffen, damit nichts verdeckt wird */
-    margin: 8vh auto 2vh auto; 
-    font-size: clamp(1.6rem, 5vh, 3.8rem);
-    width: 90%;
+    /* Zentrierung korrigiert: kein einseitiges Padding mehr */
+    margin: 2vh auto; 
+    padding: 0; 
+    font-size: clamp(1.6rem, 5vh, 3.5rem);
+    width: 100%;
     max-width: 900px;
     text-align: center;
 }
 
 .intro-text {
-    font-family: "Montserrat", sans-serif;
     font-weight: 700;
     color: var(--develey-yellow);
     text-transform: uppercase;
@@ -94,43 +96,46 @@ h1 {
 h2 {
     font-family: "Open Sans", sans-serif !important;
     font-weight: 700 !important;
-    font-size: clamp(1.3rem, 3.5vh, 2.4rem) !important;
+    font-size: clamp(1.4rem, 3.5vh, 2.5rem) !important;
     color: white !important;
     margin: 1.5vh 0 !important;
+    text-align: center;
 }
 
 /* ==========================================
-   5. FOTO FRAME - MAXIMALE PRÄSENZ (15:10)
+   5. FOTO FRAME - DYNAMISCH & VERGRÖSSERT
 ========================================== */
+.video-wrapper {
+    position: relative;
+    /* Breite passt sich flexibel der Website-Größe an */
+    width: 85vw; 
+    max-width: 850px; 
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
 video, #photo {
-    /* Der Frame wird nun deutlich größer dargestellt */
-    height: 42vh; 
-    max-height: 550px; 
-    width: auto;
-    aspect-ratio: 15 / 10; /* Exaktes 15:10 Format erzwungen */
+    width: 100%;
+    height: auto;
+    /* Festes Seitenverhältnis 15:10 bleibt erhalten */
+    aspect-ratio: 15 / 10;
     object-fit: cover;
     border-radius: 20px;
     border: 6px solid var(--develey-yellow);
-    box-shadow: 0 15px 45px rgba(0,0,0,0.5);
-    margin: 0 auto;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    /* Begrenzung der Höhe, damit Buttons auf iPads sichtbar bleiben */
+    max-height: 45vh; 
     display: block;
 }
 
-.video-wrapper {
-    position: relative;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 2vh;
-}
-
 /* ==========================================
-   6. INTERFACE-ELEMENTE
+   6. CONTROLS & BUTTONS
 ========================================== */
 input#headline {
-    width: 90vw;
-    max-width: 550px;
-    padding: 1.5vh 20px;
+    width: 90%;
+    max-width: 600px;
+    padding: 1.8vh 20px;
     margin: 2vh auto;
     border-radius: 50px;
     border: none;
@@ -138,7 +143,6 @@ input#headline {
     text-align: center;
     font-size: clamp(1rem, 2.2vh, 1.3rem);
     display: block;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .action-buttons {
@@ -152,21 +156,20 @@ input#headline {
 button {
     background-color: var(--develey-yellow);
     color: black;
-    padding: 1.8vh 4vw;
+    padding: 1.8vh 6vw;
     font-family: "Open Sans", sans-serif;
     font-weight: 800;
     border-radius: 60px;
     border: none;
     cursor: pointer;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    font-size: clamp(1.1rem, 2.5vh, 1.6rem);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    font-size: clamp(1.1rem, 2.5vh, 1.7rem);
+    transition: transform 0.1s;
     min-width: 220px;
-    transition: transform 0.1s, box-shadow 0.2s;
 }
 
 button:active {
     transform: scale(0.96);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 button#download {
@@ -175,24 +178,30 @@ button#download {
     border: 3px solid var(--develey-green);
 }
 
+.hint-text {
+    margin-top: 1.5vh;
+    font-size: clamp(0.85rem, 1.8vh, 1.1rem);
+    color: rgba(255,255,255,0.9);
+}
+
 /* ==========================================
-   7. MOBILE ANPASSUNG (SMARTPHONE)
+   7. MOBILE ANPASSUNG
 ========================================== */
 @media screen and (max-width: 800px) {
     .develey-logo-fixed {
         width: 55vw; 
     }
     .skew-section {
-        padding-top: 60px;
+        padding-top: 80px; 
     }
     h1 {
-        font-size: 1.8rem;
-        margin-top: 80px; /* Platz für Logo auf Handy */
+        font-size: clamp(1.5rem, 4vh, 2.2rem);
+        margin-top: 15px;
+    }
+    .video-wrapper {
+        width: 92vw;
     }
     video, #photo {
-        max-height: 35vh;
-    }
-    button {
-        width: 90%;
+        max-height: 38vh;
     }
 }

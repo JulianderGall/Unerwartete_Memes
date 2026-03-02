@@ -1,4 +1,4 @@
-/* =========================================
+/* ==========================================
    1. FONTS & GRUNDEINSTELLUNGEN
 ========================================== */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=Open+Sans:wdth,wght@75,800&display=swap');
@@ -9,6 +9,7 @@
     --skew-angle: -2deg;
 }
 
+/* MAGIC FIX FÜR MOBILE: Verhindert, dass Padding das Layout sprengt */
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -18,14 +19,15 @@ html, body {
     padding: 0;
     width: 100%;
     height: 100%;
+    /* 100dvh = Dynamische Höhe (ignoriert die Adressleiste auf Handys) */
     height: 100dvh; 
-    overflow: hidden; 
+    overflow: hidden; /* Scrollen komplett blockieren */
     background-color: var(--develey-green);
     font-family: "Montserrat", sans-serif;
 }
 
 /* ==========================================
-   2. SCHWEBENDES LOGO (INTERFACE)
+   2. SCHWEBENDES LOGO (Vergrößert für Desktop)
 ========================================== */
 .develey-logo-fixed {
     position: fixed;
@@ -40,15 +42,17 @@ html, body {
 }
 
 /* ==========================================
-   3. HAUPT-SEKTION
+   3. HAUPT-SEKTION (SKEW DESIGN)
 ========================================== */
 .skew-section {
     position: relative;
     width: 100%;
-    height: 100%; 
+    height: 100%; /* Orientiert sich an den 100dvh vom Body */
     background-color: var(--develey-green);
     transform: skewY(var(--skew-angle));
     transform-origin: top left;
+    
+    /* Perfekte vertikale Zentrierung */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -63,6 +67,7 @@ html, body {
     transform: skewY(calc(var(--skew-angle) * -1));
     text-align: center;
     color: white;
+    
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -70,7 +75,7 @@ html, body {
 }
 
 /* ==========================================
-   4. TYPOGRAFIE
+   4. TYPOGRAFIE (DYNAMISCHE HÖHENSKALIERUNG)
 ========================================== */
 .intro-text {
     font-family: "Montserrat", sans-serif;
@@ -122,9 +127,10 @@ h2 {
     justify-content: center;
 }
 
+/* Höhenbeschränkung & festes Seitenverhältnis 15:10 */
 video, #photo {
     width: 100%;
-    max-height: 42vh; /* Verhindert, dass es auf kleinen Screens zu hoch wird */
+    max-height: 42vh; 
     aspect-ratio: 15 / 10; /* ERZWINGT 15x10 FORMAT IN DER UI */
     object-fit: cover; /* Beschneidet den Stream visuell sauber, falls Kamera abweicht */
     border-radius: 20px;
@@ -190,26 +196,33 @@ button:active {
 }
 
 /* ==========================================
-   7. MOBIL-OPTIMIERUNG 
+   7. MOBIL-OPTIMIERUNG FÜR DAS SMARTPHONE
 ========================================== */
 @media screen and (max-width: 800px) {
     .skew-section {
+        /* Macht Platz für das weiße Logo oben links */
         padding-top: 14vh; 
     }
+    
     .video-wrapper {
         max-width: 90%;
     }
+    
     .develey-logo-fixed {
+        /* Das Bild hat viel Weißraum, daher muss es auf Mobile prozentual breiter sein */
         width: 60vw; 
         max-width: 250px;
     }
+
     h1 {
         font-size: clamp(1.4rem, 4vh, 2.2rem); 
         margin-bottom: 1.5vh;
     }
+
     video, #photo {
-        max-height: 40vh; 
+        max-height: 40vh; /* Sorgt dafür, dass der Kamera-Feed niemals den Button wegdrückt */
     }
+    
     input#headline {
         margin: 2vh auto; 
         padding: 1.5vh 15px;

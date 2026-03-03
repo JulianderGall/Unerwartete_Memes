@@ -1,6 +1,6 @@
 /**
  * script.js - Develey Meme Generator
- * Features: High-Res Export (15:10), dynamische Textgröße (max 3 Zeilen), Smart Camera Detection
+ * Features: High-Res Export (15:10), dynamische Textgröße (Open Sans), Smart Camera, Optionale Texteingabe
  */
 
 const video = document.getElementById('video');
@@ -127,66 +127,67 @@ snap.addEventListener('click', () => {
     }
     context.drawImage(video, offsetX, offsetY, drawWidth, drawHeight, 0, 0, canvas.width, canvas.height);
 
-    // B) Dynamische Größenanpassung des Headline-Textes
-    const text = headlineInput.value || "Wie reagierst du?";
+    // B) Dynamische Größenanpassung des Headline-Textes (NUR WENN TEXT EINGEGEBEN WURDE)
+    // .trim() entfernt versehentliche Leerzeichen am Anfang und Ende
+    const text = headlineInput.value.trim(); 
     
-    const maxFontSize = 130; 
-    const minFontSize = 60;  
-    const textX = 760;       
-    const textYStart = 200;  
-    const maxWidth = canvas.width - 850; 
-    const maxLines = 3;      
+    if (text !== "") {
+        const maxFontSize = 130; 
+        const minFontSize = 60;  
+        const textX = 760;       
+        const textYStart = 200;  
+        const maxWidth = canvas.width - 850; 
+        const maxLines = 3;      
 
-    context.fillStyle = "white";
-    context.textAlign = "left"; 
-    context.shadowColor = "rgba(0, 0, 0, 0.7)";
-    context.shadowBlur = 30;
-    context.shadowOffsetX = 8;
-    context.shadowOffsetY = 8;
+        context.fillStyle = "white";
+        context.textAlign = "left"; 
+        context.shadowColor = "rgba(0, 0, 0, 0.7)";
+        context.shadowBlur = 30;
+        context.shadowOffsetX = 8;
+        context.shadowOffsetY = 8;
 
-    let fontSize = maxFontSize;
-    let lines = [];
-    let textFits = false;
+        let fontSize = maxFontSize;
+        let lines = [];
+        let textFits = false;
 
-    // Iterative Verkleinerung der Schriftgröße
-    while (fontSize >= minFontSize && !textFits) {
-        // HIER GEÄNDERT: Open Sans mit Schriftstärke 800
-        context.font = `800 ${fontSize}px 'Open Sans', sans-serif`;
-        lines = getWrappedLines(context, text, maxWidth);
-        
-        let verticalFits = lines.length <= maxLines;
-        let horizontalFits = true;
-        
-        for (let i = 0; i < lines.length; i++) {
-            if (context.measureText(lines[i]).width > maxWidth) {
-                horizontalFits = false;
-                break;
+        // Iterative Verkleinerung der Schriftgröße
+        while (fontSize >= minFontSize && !textFits) {
+            context.font = `800 ${fontSize}px 'Open Sans', sans-serif`;
+            lines = getWrappedLines(context, text, maxWidth);
+            
+            let verticalFits = lines.length <= maxLines;
+            let horizontalFits = true;
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (context.measureText(lines[i]).width > maxWidth) {
+                    horizontalFits = false;
+                    break;
+                }
+            }
+
+            if (verticalFits && horizontalFits) {
+                textFits = true;
+            } else {
+                fontSize -= 10; 
             }
         }
 
-        if (verticalFits && horizontalFits) {
-            textFits = true;
-        } else {
-            fontSize -= 10; 
+        // Fallback bei extrem langen Wörtern
+        if (!textFits) {
+            fontSize = minFontSize;
+            context.font = `800 ${fontSize}px 'Open Sans', sans-serif`;
+            lines = getWrappedLines(context, text, maxWidth).slice(0, maxLines); 
         }
+
+        const lineHeight = fontSize * 1.15; 
+
+        // Zeichnen des finalen Textes
+        lines.forEach((line, index) => {
+            context.fillText(line, textX, textYStart + (index * lineHeight));
+        });
     }
 
-    // Fallback bei extrem langen Wörtern
-    if (!textFits) {
-        fontSize = minFontSize;
-        // HIER GEÄNDERT: Open Sans mit Schriftstärke 800
-        context.font = `800 ${fontSize}px 'Open Sans', sans-serif`;
-        lines = getWrappedLines(context, text, maxWidth).slice(0, maxLines); 
-    }
-
-    const lineHeight = fontSize * 1.15; 
-
-    // Zeichnen des finalen Textes
-    lines.forEach((line, index) => {
-        context.fillText(line, textX, textYStart + (index * lineHeight));
-    });
-
-    // C) Branding hochauflösend hinzufügen
+    // C) Branding hochauflösend hinzufügen (Passiert immer, egal ob mit oder ohne Text)
     const logoImg = new Image();
     const stoererImg = new Image();
     logoImg.crossOrigin = "anonymous";

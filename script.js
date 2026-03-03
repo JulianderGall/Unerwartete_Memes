@@ -16,7 +16,6 @@ const generatorBox = document.querySelector('.generator-box');
 
 // Bildquellen (Pfade aus dem Repository)
 const LOGO_SRC = 'Develey_Logo_Ecke.png';
-// Fix: Das '#' im Dateinamen muss in der URL als '%23' maskiert werden
 const STOERER_SRC = 'Bereit für das %23unerwartete_Störer.png';
 
 let currentFacingMode = "user"; // Startet standardmäßig mit der Selfie-/Frontkamera
@@ -26,13 +25,9 @@ async function checkCamerasAndShowButton() {
     if (!switchCamBtn) return; 
 
     try {
-        // Fragt alle verfügbaren Medien-Geräte ab
         const devices = await navigator.mediaDevices.enumerateDevices();
-        
-        // Filtert nur die Videokameras heraus
         const videoInputDevices = devices.filter(device => device.kind === 'videoinput');
 
-        // Wenn das iPad/Gerät mehr als eine Kamera hat -> Button einblenden
         if (videoInputDevices.length > 1) {
             switchCamBtn.style.display = 'inline-block'; 
         } else {
@@ -53,7 +48,7 @@ function startCamera(facingMode) {
     const constraints = {
         video: { 
             facingMode: facingMode,
-            aspectRatio: 1.5 // Erzwingt bei unterstützten Geräten direkt das 15:10 Format
+            aspectRatio: 1.5 
         },
         audio: false
     };
@@ -82,7 +77,7 @@ switchCamBtn.addEventListener('click', () => {
     startCamera(currentFacingMode);
 });
 
-// --- Hilfsfunktion: Berechnet die Zeilenumbrüche OHNE sie direkt zu zeichnen ---
+// --- Hilfsfunktion: Berechnet die Zeilenumbrüche ---
 function getWrappedLines(context, text, maxWidth) {
     const words = text.split(' ');
     const lines = [];
@@ -106,7 +101,7 @@ function getWrappedLines(context, text, maxWidth) {
     return lines;
 }
 
-// 3. Foto aufnehmen & Meme generieren (Button: "Say Develey")
+// 3. Foto aufnehmen & Meme generieren
 snap.addEventListener('click', () => {
     const context = canvas.getContext('2d');
     
@@ -114,7 +109,7 @@ snap.addEventListener('click', () => {
     canvas.width = 2400;
     canvas.height = 1600;
 
-    // A) Kamera-Bild zeichnen (mit Center-Crop, um Verzerrungen zu vermeiden)
+    // A) Kamera-Bild zeichnen (mit Center-Crop)
     const videoRatio = video.videoWidth / video.videoHeight;
     const canvasRatio = canvas.width / canvas.height;
     
@@ -135,14 +130,13 @@ snap.addEventListener('click', () => {
     // B) Dynamische Größenanpassung des Headline-Textes
     const text = headlineInput.value || "Wie reagierst du?";
     
-    const maxFontSize = 130; // Maximale Startgröße
-    const minFontSize = 60;  // Minimale noch lesbare Größe
-    const textX = 760;       // Abstand von links (Platz für Logo)
-    const textYStart = 200;  // Y-Position der ersten Zeile
-    const maxWidth = canvas.width - 850; // Platz nach rechts
-    const maxLines = 3;      // Harte Grenze: Maximal 3 Zeilen
+    const maxFontSize = 130; 
+    const minFontSize = 60;  
+    const textX = 760;       
+    const textYStart = 200;  
+    const maxWidth = canvas.width - 850; 
+    const maxLines = 3;      
 
-    // Styling für den Text
     context.fillStyle = "white";
     context.textAlign = "left"; 
     context.shadowColor = "rgba(0, 0, 0, 0.7)";
@@ -154,16 +148,15 @@ snap.addEventListener('click', () => {
     let lines = [];
     let textFits = false;
 
-    // Iterative Verkleinerung der Schriftgröße, bis der Text perfekt passt
+    // Iterative Verkleinerung der Schriftgröße
     while (fontSize >= minFontSize && !textFits) {
-        context.font = `900 ${fontSize}px 'Montserrat', sans-serif`;
+        // HIER GEÄNDERT: Open Sans mit Schriftstärke 800
+        context.font = `800 ${fontSize}px 'Open Sans', sans-serif`;
         lines = getWrappedLines(context, text, maxWidth);
         
-        // Bedingung 1: Passt es vertikal? (Maximal 3 Zeilen)
         let verticalFits = lines.length <= maxLines;
-
-        // Bedingung 2: Passt jede einzelne Zeile horizontal? (Verhindert abgeschnittene lange Wörter)
         let horizontalFits = true;
+        
         for (let i = 0; i < lines.length; i++) {
             if (context.measureText(lines[i]).width > maxWidth) {
                 horizontalFits = false;
@@ -171,22 +164,22 @@ snap.addEventListener('click', () => {
             }
         }
 
-        // Der Text passt nur, wenn BEIDE Kriterien erfüllt sind
         if (verticalFits && horizontalFits) {
             textFits = true;
         } else {
-            fontSize -= 10; // Schriftgröße verringern und erneut testen
+            fontSize -= 10; 
         }
     }
 
-    // Fallback: Falls ein Wort extrem lang ist, auf minFontSize setzen und nach 3 Zeilen kappen
+    // Fallback bei extrem langen Wörtern
     if (!textFits) {
         fontSize = minFontSize;
-        context.font = `900 ${fontSize}px 'Montserrat', sans-serif`;
+        // HIER GEÄNDERT: Open Sans mit Schriftstärke 800
+        context.font = `800 ${fontSize}px 'Open Sans', sans-serif`;
         lines = getWrappedLines(context, text, maxWidth).slice(0, maxLines); 
     }
 
-    const lineHeight = fontSize * 1.15; // Dynamischer Zeilenabstand
+    const lineHeight = fontSize * 1.15; 
 
     // Zeichnen des finalen Textes
     lines.forEach((line, index) => {
@@ -204,24 +197,19 @@ snap.addEventListener('click', () => {
     let loadedCount = 0;
     const finalizeImage = () => {
         loadedCount++;
-        // Erst wenn Logo UND Störer geladen sind, wird gezeichnet
         if (loadedCount === 2) {
-            // Schatten für die Bilder deaktivieren
             context.shadowBlur = 0;
             context.shadowOffsetX = 0;
             context.shadowOffsetY = 0;
             
-            // LOGO OBEN LINKS - Absolut bündig
             const lWidth = canvas.width * 0.30; 
             const lHeight = (logoImg.height / logoImg.width) * lWidth;
             context.drawImage(logoImg, 0, 0, lWidth, lHeight);
 
-            // STÖRER UNTEN RECHTS - Absolut bündig zum Rand
             const sWidth = 750; 
             const sHeight = (stoererImg.height / stoererImg.width) * sWidth;
             context.drawImage(stoererImg, canvas.width - sWidth, canvas.height - sHeight, sWidth, sHeight);
 
-            // JPEG für den Output generieren (0.95 = Top-Qualität für Druck)
             photo.src = canvas.toDataURL('image/jpeg', 0.95);
             generatorBox.style.display = 'none';
             resultContainer.style.display = 'block';
@@ -234,7 +222,7 @@ snap.addEventListener('click', () => {
     stoererImg.onerror = finalizeImage;
 });
 
-// 4. Download Logik (Lokal ausführen, ohne Server)
+// 4. Download Logik
 downloadBtn.addEventListener('click', () => {
     const link = document.createElement('a');
     link.download = 'develey_meme_unerwartet.jpg'; 

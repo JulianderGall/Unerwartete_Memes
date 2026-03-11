@@ -235,3 +235,37 @@ downloadBtn.addEventListener('click', () => {
 resetBtn.addEventListener('click', () => {
     location.reload(); 
 });
+// 6. Zufalls-Sprüche Generator
+const memePhrases = [
+    "Wenn das Ketchup leer ist",
+    "Wenn ich einen Ausbildungsplatz bei Develey bekomme",
+    "Wenn es dein Lieblingsessen in der Kantine gibt",
+    "Wenn der Saucenvorrat leer geht",
+    "Wenn die Aufgabe „einfach“ sein soll…",
+    "Wenn die Süss-Sauer Sauce leer ist",
+    "Wenn die Kantine plötzlich geschlossen ist",
+    "Wenn alles schief geht, aber du trotzdem lächelst",
+    "Wenn dein Lieblingskollege wieder zurück ist",
+    "Heute wird ein guter Tag. Bestimmt.",
+    "Wenn du #unerwartet deinen Traumjob findest",
+    "#Unerwartet gut drauf",
+    "Wenn du merkst, dass Ausbildung nicht nur Kaffee holen bedeutet.",
+    "Wenn der Lehrer sagt: Freiwillige?",
+    "Wenn du sagst: „Ich lerne… gleich“",
+    "Pause schon wieder vorbei?",
+    "Wenn du die letzte Seite in der Schulaufgabe übersehen hast",
+    "Wenn die letzten zwei Stunden entfallen",
+    "Wenn dein Akku 1% hat",
+    "Wenn du in der Schule abgefragt wirst",
+    "Wenn du merkst, dass die Pommes ohne Ketchup sind",
+    "Grillsaison steht wieder an",
+    "Wenn der Wecker klingelt",
+    "Wenn der Gong den Unterricht beendet"
+];
+
+randomTextBtn.addEventListener('click', () => {
+    // Zufällige Zahl basierend auf der Länge der Liste generieren
+    const randomIndex = Math.floor(Math.random() * memePhrases.length);
+    // Den ausgewählten Spruch in das Textfeld eintragen
+    headlineInput.value = memePhrases[randomIndex];
+});

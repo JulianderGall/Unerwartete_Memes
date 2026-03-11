@@ -1,6 +1,6 @@
 /**
  * script.js - Develey Meme Generator
- * Features: High-Res Export (15:10), dynamische Textgröße (Open Sans), Smart Camera, Optionale Texteingabe
+ * Features: High-Res Export (15:10), dynamische Textgröße (Open Sans), Smart Camera, Optionale Texteingabe, Zufalls-Generator
  */
 
 const video = document.getElementById('video');
@@ -13,6 +13,9 @@ const headlineInput = document.getElementById('headline');
 const photo = document.getElementById('photo');
 const resultContainer = document.getElementById('result-container');
 const generatorBox = document.querySelector('.generator-box');
+
+// NEU: Der Zufalls-Button (Würfel)
+const randomTextBtn = document.getElementById('random-text');
 
 // Bildquellen (Pfade aus dem Repository)
 const LOGO_SRC = 'Develey_Logo_Ecke.png';
@@ -128,7 +131,6 @@ snap.addEventListener('click', () => {
     context.drawImage(video, offsetX, offsetY, drawWidth, drawHeight, 0, 0, canvas.width, canvas.height);
 
     // B) Dynamische Größenanpassung des Headline-Textes (NUR WENN TEXT EINGEGEBEN WURDE)
-    // .trim() entfernt versehentliche Leerzeichen am Anfang und Ende
     const text = headlineInput.value.trim(); 
     
     if (text !== "") {
@@ -235,7 +237,8 @@ downloadBtn.addEventListener('click', () => {
 resetBtn.addEventListener('click', () => {
     location.reload(); 
 });
-// 6. Zufalls-Sprüche Generator
+
+// 6. NEU: Zufalls-Sprüche Generator
 const memePhrases = [
     "Wenn das Ketchup leer ist",
     "Wenn ich einen Ausbildungsplatz bei Develey bekomme",

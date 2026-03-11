@@ -1,0 +1,16 @@
+{
+  "name": "Develey Meme Generator",
+  "short_name": "Develey Meme",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#007734",
+  "theme_color": "#007734",
+  "icons": [
+    {
+      "src": "Develey_Logo_Ecke.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

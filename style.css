@@ -2,7 +2,7 @@
    1. FONTS & GRUND-SETUP (OFFLINE)
 ========================================== */
 
-/* Montserrat - Variable Font (deckt deine benötigten Schnitte 500, 700 und 900 ab) */
+/* Montserrat - Variable Font (deckt alle benötigten Schnitte ab) */
 @font-face {
   font-family: 'Montserrat';
   font-style: normal;
@@ -10,7 +10,7 @@
   src: url('./fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
 }
 
-/* Open Sans - Variable Font (deckt deinen benötigten Schnitt 800 ab) */
+/* Open Sans - Variable Font (deckt alle benötigten Schnitte ab) */
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
@@ -148,7 +148,7 @@ video, #photo {
 }
 
 /* ==========================================
-   6. CONTROLS & BUTTONS
+   6. CONTROLS & NEUER INPUT-WRAPPER
 ========================================== */
 .controls {
     width: 100%;
@@ -157,17 +157,27 @@ video, #photo {
     align-items: center;
 }
 
-input#headline {
+/* Der neue Container, der Feld und Würfel nebeneinander hält */
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Abstand zwischen Textfeld und Würfel */
     width: 90%;
-    max-width: 500px;
-    padding: 1.2vh 20px;
+    max-width: 550px;
     margin: 0 auto 1.5vh auto;
+}
+
+input#headline {
+    flex-grow: 1; /* Nimmt den maximal verfügbaren Platz neben dem Button ein */
+    width: auto; 
+    margin: 0; /* Margin wird jetzt vom Wrapper gesteuert */
+    padding: 1.2vh 20px;
     border-radius: 50px;
     border: none;
     font-weight: 700;
     text-align: center;
     font-size: clamp(0.9rem, 1.8vh, 1.1rem);
-    display: block;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
 }
 
@@ -256,4 +266,32 @@ button#switch-cam {
     .video-wrapper, #photo {
         margin-bottom: 2vh; /* Auf Mobile etwas geringerer Abstand */
     }
+}
+
+/* ==========================================
+   9. ZUFALLS-BUTTON (Kleiner runder Würfel)
+========================================== */
+button#random-text {
+    background-color: var(--develey-yellow); /* Passend zum Hauptbutton */
+    color: black;
+    border: none;
+    border-radius: 50%; /* Macht den Button perfekt rund */
+    width: clamp(45px, 6vh, 60px); /* Feste, quadratische Größe */
+    height: clamp(45px, 6vh, 60px);
+    padding: 0;
+    margin: 0;
+    font-size: clamp(1.4rem, 3vh, 2rem); /* Würfel-Emoji schön groß */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: unset; /* Überschreibt die 200px Mindestbreite der großen Buttons */
+    flex-shrink: 0; /* Verhindert, dass das Textfeld den Button zusammenquetscht */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+button#random-text:active {
+    transform: scale(0.9); /* Cooler Klick-Effekt */
+    background-color: white;
 }

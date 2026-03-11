@@ -53,5 +53,19 @@
     </div>
 
     <script src="script.js"></script>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                .then(registration => {
+                    console.log('ServiceWorker erfolgreich registriert!');
+                })
+                .catch(err => {
+                    console.log('ServiceWorker Fehler: ', err);
+                });
+            });
+        }
+    </script>
 </body>
 </html>

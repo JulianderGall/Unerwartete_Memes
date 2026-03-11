@@ -1,7 +1,22 @@
 /* ==========================================
-   1. FONTS & GRUND-SETUP
+   1. FONTS & GRUND-SETUP (OFFLINE)
 ========================================== */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=Open+Sans:wdth,wght@75,800&display=swap');
+
+/* Montserrat - Variable Font (deckt deine benötigten Schnitte 500, 700 und 900 ab) */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 100 900; 
+  src: url('./fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+}
+
+/* Open Sans - Variable Font (deckt deinen benötigten Schnitt 800 ab) */
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300 800; 
+  src: url('./fonts/OpenSans-VariableFont_wdth,wght.ttf') format('truetype');
+}
 
 :root {
     --develey-green: rgb(0, 119, 52);

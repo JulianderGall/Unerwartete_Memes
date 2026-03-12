@@ -1,4 +1,4 @@
-const CACHE_NAME = 'develey-meme-v2'; // WICHTIG: Version hochzählen!
+const CACHE_NAME = 'develey-meme-v3'; // WICHTIG: Version hochzählen!
 
 // Hier listen wir ALLE Dateien auf, die offline verfügbar sein müssen
 const FILES_TO_CACHE = [

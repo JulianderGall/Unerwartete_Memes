@@ -283,13 +283,10 @@ button#switch-cam {
     h1 {
         font-size: clamp(1.4rem, 4vh, 2.2rem);
     }
-    video {
+   video, #photo {
         max-width: min(95vw, calc(42vh * 1.5)); 
     }
-    .photo-frame {
-        max-width: min(95vw, calc(42vh * 1.555)); 
-    }
-    .video-wrapper, .photo-frame {
+    .video-wrapper, #photo {
         margin-bottom: 2vh; 
     }
 }

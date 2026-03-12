@@ -128,46 +128,20 @@ h2 {
     margin: 0 auto 3.5vh auto; 
 }
 
-/* Das Live-Kamera-Bild */
-video {
+#photo {
+    margin-bottom: 3.5vh;
+}
+
+video, #photo {
     width: 100%;
     max-width: min(95vw, calc(50vh * 1.5)); 
-    aspect-ratio: 3 / 2; /* Kamera bleibt 15:10 */
+    aspect-ratio: 3 / 2; /* Bleibt strikt 15:10 */
     object-fit: cover; 
     border-radius: 20px;
     border: 6px solid var(--develey-yellow);
     box-shadow: 0 15px 40px rgba(0,0,0,0.5);
     display: block;
     margin: 0 auto;
-}
-
-/* NEU: Der Wrapper für das fertige Meme (schneidet den weißen Rand ab) */
-.photo-frame {
-    width: 100%;
-    /* Die Breite orientiert sich am etwas schmaleren inneren Bildformat (ohne den Rand) */
-    max-width: min(95vw, calc(50vh * 1.555)); 
-    aspect-ratio: 2240 / 1440; 
-    border-radius: 20px;
-    border: 6px solid var(--develey-yellow);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-    margin: 0 auto 3.5vh auto;
-    overflow: hidden; /* Hier passiert die Magie: Der weiße Rand wird optisch "abgeschnitten" */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Das fertige Foto im Wrapper */
-#photo {
-    /* Das Bild wird absichtlich so weit vergrößert, dass der weiße Rand rausgeschoben wird */
-    width: 107.14%;  /* 2400px gesamt / 2240px innen = 107.14% */
-    height: 111.11%; /* 1600px gesamt / 1440px innen = 111.11% */
-    max-width: unset;
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
-    margin: 0;
-    object-fit: fill; 
 }
 
 /* ==========================================

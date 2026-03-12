@@ -125,26 +125,49 @@ h2 {
     width: 100%;
     display: flex;
     justify-content: center;
-    /* Deutlich mehr Abstand nach unten, damit der Schatten nicht über das Textfeld ragt */
     margin: 0 auto 3.5vh auto; 
 }
 
-/* Auch das fertige Foto braucht den gleichen Abstand nach unten */
-#photo {
-    margin-bottom: 3.5vh;
-}
-
-video, #photo {
+/* Das Live-Kamera-Bild */
+video {
     width: 100%;
-    /* Maximal-Höhe leicht reduziert, um Platz für den neuen Abstand (margin-bottom) zu schaffen */
     max-width: min(95vw, calc(50vh * 1.5)); 
-    aspect-ratio: 3 / 2; /* Bleibt strikt 15:10 */
+    aspect-ratio: 3 / 2; /* Kamera bleibt 15:10 */
     object-fit: cover; 
     border-radius: 20px;
     border: 6px solid var(--develey-yellow);
     box-shadow: 0 15px 40px rgba(0,0,0,0.5);
     display: block;
     margin: 0 auto;
+}
+
+/* NEU: Der Wrapper für das fertige Meme (schneidet den weißen Rand ab) */
+.photo-frame {
+    width: 100%;
+    /* Die Breite orientiert sich am etwas schmaleren inneren Bildformat (ohne den Rand) */
+    max-width: min(95vw, calc(50vh * 1.555)); 
+    aspect-ratio: 2240 / 1440; 
+    border-radius: 20px;
+    border: 6px solid var(--develey-yellow);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    margin: 0 auto 3.5vh auto;
+    overflow: hidden; /* Hier passiert die Magie: Der weiße Rand wird optisch "abgeschnitten" */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Das fertige Foto im Wrapper */
+#photo {
+    /* Das Bild wird absichtlich so weit vergrößert, dass der weiße Rand rausgeschoben wird */
+    width: 107.14%;  /* 2400px gesamt / 2240px innen = 107.14% */
+    height: 111.11%; /* 1600px gesamt / 1440px innen = 111.11% */
+    max-width: unset;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
+    object-fit: fill; 
 }
 
 /* ==========================================
@@ -260,11 +283,14 @@ button#switch-cam {
     h1 {
         font-size: clamp(1.4rem, 4vh, 2.2rem);
     }
-    video, #photo {
+    video {
         max-width: min(95vw, calc(42vh * 1.5)); 
     }
-    .video-wrapper, #photo {
-        margin-bottom: 2vh; /* Auf Mobile etwas geringerer Abstand */
+    .photo-frame {
+        max-width: min(95vw, calc(42vh * 1.555)); 
+    }
+    .video-wrapper, .photo-frame {
+        margin-bottom: 2vh; 
     }
 }
 

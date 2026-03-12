@@ -108,37 +108,49 @@ function getWrappedLines(context, text, maxWidth) {
 snap.addEventListener('click', () => {
     const context = canvas.getContext('2d');
     
-    // HOCHAUFLÖSENDES FORMAT ERZWINGEN (2400 x 1600 = exakt 15:10)
+    // HOCHAUFLÖSENDES FORMAT ERZWINGEN (2400 x 1600)
     canvas.width = 2400;
     canvas.height = 1600;
 
-    // A) Kamera-Bild zeichnen (mit Center-Crop)
+    // NEU: Weißen Rand definieren (80px entspricht ca. 5mm beim 15x10 Format)
+    const border = 80;
+    const innerWidth = canvas.width - (border * 2);   // 2240px
+    const innerHeight = canvas.height - (border * 2); // 1440px
+
+    // Den kompletten Canvas ERST WEISS füllen (Das ist der spätere Rahmen)
+    context.fillStyle = "white";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // A) Kamera-Bild zeichnen (mit Center-Crop auf den INNEREN Bereich)
     const videoRatio = video.videoWidth / video.videoHeight;
-    const canvasRatio = canvas.width / canvas.height;
+    const innerRatio = innerWidth / innerHeight;
     
     let drawWidth = video.videoWidth;
     let drawHeight = video.videoHeight;
     let offsetX = 0;
     let offsetY = 0;
 
-    if (videoRatio > canvasRatio) {
-        drawWidth = video.videoHeight * canvasRatio;
+    if (videoRatio > innerRatio) {
+        drawWidth = video.videoHeight * innerRatio;
         offsetX = (video.videoWidth - drawWidth) / 2;
     } else {
-        drawHeight = video.videoWidth / canvasRatio;
+        drawHeight = video.videoWidth / innerRatio;
         offsetY = (video.videoHeight - drawHeight) / 2;
     }
-    context.drawImage(video, offsetX, offsetY, drawWidth, drawHeight, 0, 0, canvas.width, canvas.height);
+    
+    // Video in den Rahmen zeichnen (versetzt um "border" von oben und links)
+    context.drawImage(video, offsetX, offsetY, drawWidth, drawHeight, border, border, innerWidth, innerHeight);
 
-    // B) Dynamische Größenanpassung des Headline-Textes (NUR WENN TEXT EINGEGEBEN WURDE)
+    // B) Dynamische Größenanpassung des Headline-Textes
     const text = headlineInput.value.trim(); 
     
     if (text !== "") {
         const maxFontSize = 130; 
         const minFontSize = 60;  
-        const textX = 760;       
-        const textYStart = 200;  
-        const maxWidth = canvas.width - 850; 
+        // Text um den Rand nach innen rücken
+        const textX = 760 + border;       
+        const textYStart = 200 + border;  
+        const maxWidth = innerWidth - 850; 
         const maxLines = 3;      
 
         context.fillStyle = "white";
@@ -152,7 +164,6 @@ snap.addEventListener('click', () => {
         let lines = [];
         let textFits = false;
 
-        // Iterative Verkleinerung der Schriftgröße
         while (fontSize >= minFontSize && !textFits) {
             context.font = `800 ${fontSize}px 'Open Sans', sans-serif`;
             lines = getWrappedLines(context, text, maxWidth);
@@ -174,7 +185,6 @@ snap.addEventListener('click', () => {
             }
         }
 
-        // Fallback bei extrem langen Wörtern
         if (!textFits) {
             fontSize = minFontSize;
             context.font = `800 ${fontSize}px 'Open Sans', sans-serif`;
@@ -183,13 +193,12 @@ snap.addEventListener('click', () => {
 
         const lineHeight = fontSize * 1.15; 
 
-        // Zeichnen des finalen Textes
         lines.forEach((line, index) => {
             context.fillText(line, textX, textYStart + (index * lineHeight));
         });
     }
 
-    // C) Branding hochauflösend hinzufügen (Passiert immer, egal ob mit oder ohne Text)
+    // C) Branding hochauflösend hinzufügen
     const logoImg = new Image();
     const stoererImg = new Image();
     logoImg.crossOrigin = "anonymous";
@@ -205,13 +214,15 @@ snap.addEventListener('click', () => {
             context.shadowOffsetX = 0;
             context.shadowOffsetY = 0;
             
-            const lWidth = canvas.width * 0.30; 
+            const lWidth = innerWidth * 0.30; 
             const lHeight = (logoImg.height / logoImg.width) * lWidth;
-            context.drawImage(logoImg, 0, 0, lWidth, lHeight);
+            // Logo im inneren Bereich platzieren
+            context.drawImage(logoImg, border, border, lWidth, lHeight);
 
             const sWidth = 750; 
             const sHeight = (stoererImg.height / stoererImg.width) * sWidth;
-            context.drawImage(stoererImg, canvas.width - sWidth, canvas.height - sHeight, sWidth, sHeight);
+            // Störer unten rechts im inneren Bereich platzieren
+            context.drawImage(stoererImg, canvas.width - border - sWidth, canvas.height - border - sHeight, sWidth, sHeight);
 
             photo.src = canvas.toDataURL('image/jpeg', 0.95);
             generatorBox.style.display = 'none';
